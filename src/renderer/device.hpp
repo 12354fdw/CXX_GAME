@@ -18,6 +18,8 @@ class Device {
 	void createInstance();
 	void getAdapter();
 	void getDevice();
+
+	WGPUDevice requestDeviceSync(WGPUDeviceDescriptor const *descriptor);
 };
 
 }
