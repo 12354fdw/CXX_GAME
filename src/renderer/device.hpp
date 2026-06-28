@@ -13,9 +13,11 @@ class Device {
   private:
 	WGPUInstance instance;
 	WGPUAdapter adapter;
+	WGPUDevice device;
 
 	void createInstance();
 	void getAdapter();
+	void getDevice();
 };
 
 }

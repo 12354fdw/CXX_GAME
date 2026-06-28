@@ -1,5 +1,6 @@
 #include "device.hpp"
 #include "webgpu/webgpu.h"
+#include <iostream>
 #include <stdexcept>
 #include <thread>
 #include <chrono>
@@ -9,7 +10,10 @@ Device::Device() {
 	createInstance();
 	getAdapter();
 }
-Device::~Device() {}
+Device::~Device() {
+	wgpuAdapterRelease(adapter);
+	wgpuInstanceRelease(instance);
+}
 
 void Device::createInstance() {
 	WGPUInstanceDescriptor desc{};
@@ -52,6 +56,11 @@ void Device::getAdapter() {
 	}
 
 	adapter = userData.adapter;
+
+	// inspection
+	WGPUAdapterProperties properties{};
+	wgpuAdapterGetProperties(adapter, &properties);
+	std::cout << "GPU Selected: " << properties.name << std::endl;
 }
 
 }
