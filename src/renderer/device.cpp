@@ -15,11 +15,16 @@ Device::Device() {
 
 	getDevice();
 	std::cout << "got webgpu device!" << std::endl;
+
+	queue = wgpuDeviceGetQueue(device);
+	std::cout << "got webgpu queue!" << std::endl;
 }
+
 Device::~Device() {
+	wgpuQueueRelease(queue);
+	wgpuDeviceRelease(device);
 	wgpuAdapterRelease(adapter);
 	wgpuInstanceRelease(instance);
-	wgpuDeviceRelease(device);
 }
 
 void Device::createInstance() {
@@ -71,7 +76,7 @@ void Device::getAdapter() {
 }
 
 void Device::getDevice() {
-#if DISABLE_VALIDATION_LAYERS
+#if RENDERER_DISABLE_VALIDATION_LAYERS
 	const char *disableToggles[] = {"skip_validation",
 									"enable_backend_validation"};
 	uint32_t disableCount = 2;

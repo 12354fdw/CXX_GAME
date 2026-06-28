@@ -14,6 +14,7 @@ class Device {
 	WGPUInstance instance;
 	WGPUAdapter adapter;
 	WGPUDevice device;
+	WGPUQueue queue;
 
 	void createInstance();
 	void getAdapter();
