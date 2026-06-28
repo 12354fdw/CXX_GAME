@@ -15,6 +15,7 @@ add_subdirectory(webgpu)
 
 add_executable(cxxgame
 src/main.cpp
+src/renderer/device.cpp
 )
 
 target_link_libraries(cxxgame PRIVATE webgpu)
