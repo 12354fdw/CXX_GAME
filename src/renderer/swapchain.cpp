@@ -1,22 +1,19 @@
 #include "swapchain.hpp"
 #include "device.hpp"
-#include "sdl3webgpu.h"
 #include "webgpu/webgpu.h"
-#include "window.hpp"
 
 namespace bingusengine {
-Swapchain::Swapchain(Window &window, Device &device)
-	: device(device), window(window) {
-	surface = SDL_GetWGPUSurface(device.getInstance(), window.getWindow());
-}
+Swapchain::Swapchain(Device &device, WGPUSurface &surface)
+	: device(device), surface(surface) {}
 
 void Swapchain::configureSurface() {
 	WGPUSurfaceConfiguration config{};
 	config.nextInChain = nullptr;
 
-	WGPUTextureFormat preferredFormat =
-		wgpuSurfaceGetPreferredFormat(surface, device.getAdapter());
-	config.format = preferredFormat;
+	WGPUSurfaceCapabilities capabilities{};
+	wgpuSurfaceGetCapabilities(surface, device.getAdapter(), &capabilities);
+
+	config.format = capabilities.formats[0];
 
 	config.viewFormatCount = 0;
 	config.viewFormats = nullptr;
@@ -31,16 +28,7 @@ void Swapchain::configureSurface() {
 	config.height = 480;
 
 	wgpuSurfaceConfigure(surface, &config);
-}
-
-void Swapchain::present() {
-	auto [surfaceTexture, targetView] = getNextSurfaceViewData();
-	if (!targetView)
-		return;
-
-	wgpuSurfacePresent(surface);
-	wgpuTextureRelease(surfaceTexture.texture);
-	wgpuTextureViewRelease(targetView);
+	wgpuSurfaceCapabilitiesFreeMembers(capabilities);
 }
 
 std::pair<WGPUSurfaceTexture, WGPUTextureView>
@@ -55,7 +43,7 @@ Swapchain::getNextSurfaceViewData() {
 	WGPUTextureViewDescriptor viewDesc{};
 	viewDesc.nextInChain = nullptr;
 	viewDesc.label = "surface texture view";
-	viewDesc.format = wgpuTextureGetFormat(surfaceTexture.texture);
+	viewDesc.format = WGPUTextureFormat_Undefined;
 	viewDesc.dimension = WGPUTextureViewDimension_2D;
 	viewDesc.baseMipLevel = 0;
 	viewDesc.mipLevelCount = 1;

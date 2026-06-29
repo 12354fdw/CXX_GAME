@@ -8,26 +8,33 @@
 #include <thread>
 
 namespace bingusengine {
-Device::Device(Window &window): window(window) {
+Device::Device(Window &window) : window(window) {
 
 	createInstance();
 	std::cout << "created webgpu instance!" << std::endl;
 
-	_getAdapter();
+	setupAdapter();
 	std::cout << "got webgpu adapter!" << std::endl;
 
-	_getDevice();
+	setupDevice();
 	std::cout << "got webgpu device!" << std::endl;
+
+	setupErrorCallback();
 
 	queue = wgpuDeviceGetQueue(device);
 	std::cout << "got webgpu queue!" << std::endl;
 }
 
 Device::~Device() {
-	wgpuQueueRelease(queue);
-	wgpuDeviceRelease(device);
-	wgpuAdapterRelease(adapter);
-	wgpuInstanceRelease(instance);
+	// tmp solution to fix double free
+	// wgpuQueueRelease(queue);
+	// wgpuDeviceRelease(device);
+	// wgpuAdapterRelease(adapter);
+	// wgpuInstanceRelease(instance);
+}
+
+void Device::submitCommandBuffer(WGPUCommandBuffer cmdBuffer) {
+	wgpuQueueSubmit(queue, 1, &cmdBuffer);
 }
 
 void Device::createInstance() {
@@ -40,9 +47,10 @@ void Device::createInstance() {
 	}
 }
 
-void Device::_getAdapter() {
+void Device::setupAdapter() {
 	WGPURequestAdapterOptions options{};
-	options.compatibleSurface = SDL_GetWGPUSurface(instance, window.getWindow());
+	options.compatibleSurface =
+		SDL_GetWGPUSurface(instance, window.getWindow());
 	options.nextInChain = nullptr;
 
 	struct UserData {
@@ -79,7 +87,7 @@ void Device::_getAdapter() {
 	std::cout << "GPU Selected: " << properties.name << std::endl;
 }
 
-void Device::_getDevice() {
+void Device::setupDevice() {
 #ifdef bingusengine_DISABLE_VALIDATION_LAYERS
 	const char *disableToggles[] = {"skip_validation",
 									"enable_backend_validation"};
@@ -105,6 +113,17 @@ void Device::_getDevice() {
 	desc.nextInChain = reinterpret_cast<const WGPUChainedStruct *>(&toggleDesc);
 
 	device = requestDeviceSync(&desc);
+}
+
+void Device::setupErrorCallback() {
+	auto onDeviceError = [](WGPUErrorType type, char const *message,
+							void * /* pUserData */) {
+		std::cout << "DAWN Error: type " << type;
+		if (message)
+			std::cout << " (" << message << ")";
+		std::cout << std::endl;
+	};
+	wgpuDeviceSetUncapturedErrorCallback(device, onDeviceError, nullptr);
 }
 
 WGPUDevice Device::requestDeviceSync(WGPUDeviceDescriptor const *descriptor) {

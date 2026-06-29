@@ -27,6 +27,22 @@ src/renderer/renderer.cpp
 src/renderer/swapchain.cpp
 )
 
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_options(cxxgame PRIVATE
+        -fsanitize=address
+        -fsanitize=undefined
+        -fno-omit-frame-pointer
+        -g
+		-O0
+    )
+
+    target_link_options(cxxgame PRIVATE
+        -fsanitize=address
+        -fsanitize=undefined
+    )
+endif()
+
 target_link_libraries(cxxgame PRIVATE
 	webgpu
 	SDL3::SDL3

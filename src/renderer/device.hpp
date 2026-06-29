@@ -16,18 +16,21 @@ class Device {
 	WGPUAdapter getAdapter() { return adapter; }
 	WGPUDevice getDevice() { return device; }
 
+	void submitCommandBuffer(WGPUCommandBuffer cmdBuffer);
+
   private:
 	Window &window;
-	
+
 	WGPUInstance instance;
 	WGPUAdapter adapter;
 	WGPUDevice device;
 	WGPUQueue queue;
 
 	void createInstance();
-	void _getAdapter();
-	void _getDevice();
-	
+	void setupAdapter();
+	void setupDevice();
+	void setupErrorCallback();
+
 	WGPUDevice requestDeviceSync(WGPUDeviceDescriptor const *descriptor);
 };
 

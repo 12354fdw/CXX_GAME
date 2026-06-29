@@ -9,17 +9,19 @@ namespace bingusengine {
 
 class Renderer {
   public:
-	Renderer();
+	Renderer(Window *window);
 	~Renderer();
 
 	void renderFrame();
 
   private:
-	Window window;
+	Window *window;
 	Device device;
-	Swapchain swapchain;
 
 	WGPUSurface surface;
+	Swapchain swapchain;
+
+	WGPUCommandEncoder createCommandEncoder();
 };
 
 } // namespace bingusengine

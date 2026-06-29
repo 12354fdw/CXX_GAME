@@ -2,25 +2,22 @@
 
 #include "device.hpp"
 #include "webgpu/webgpu.h"
-#include "window.hpp"
 #include <utility>
 
 namespace bingusengine {
 
 class Swapchain {
   public:
-	Swapchain(Window &window, Device &device);
+	Swapchain(Device &device, WGPUSurface &surface);
 
 	void configureSurface();
-	void present();
+
+	std::pair<WGPUSurfaceTexture, WGPUTextureView> getNextSurfaceViewData();
 
   private:
-	Window window;
 	Device device;
 
 	WGPUSurface surface;
-
-	std::pair<WGPUSurfaceTexture, WGPUTextureView> getNextSurfaceViewData();
 };
 
 } // namespace bingusengine
