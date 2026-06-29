@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20...3.30)
 
-project(CXXGame LANGUAGES CXX)
+project(CXXGame LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -11,9 +11,11 @@ add_compile_options(
     -Wno-error
     -Wno-c2y-extensions
 )
-add_subdirectory(webgpu)
 
 find_package(SDL3 REQUIRED)
+
+add_subdirectory(external/webgpu)
+add_subdirectory(external/sdl3webgpu)
 
 add_executable(cxxgame
 src/main.cpp
