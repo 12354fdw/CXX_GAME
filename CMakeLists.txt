@@ -14,6 +14,8 @@ add_compile_options(
 
 find_package(SDL3 REQUIRED)
 
+set(DAWN_USE_WAYLAND ON)
+
 add_subdirectory(external/webgpu)
 add_subdirectory(external/sdl3webgpu)
 
@@ -21,9 +23,11 @@ add_executable(cxxgame
 src/main.cpp
 src/renderer/device.cpp
 src/renderer/window.cpp
+src/renderer/renderer.cpp
 )
 
 target_link_libraries(cxxgame PRIVATE
 	webgpu
 	SDL3::SDL3
+	sdl3webgpu
 )

@@ -1,16 +1,19 @@
 #pragma once
 
 #include "webgpu/webgpu.h"
+#include "window.hpp"
 #define WEBGPU_CPP_IMPLEMENTATION
 #include <webgpu/webgpu_cpp.h>
 
-namespace renderer {
+namespace bingusengine {
 class Device {
   public:
-	Device();
+	Device(Window &window);
 	~Device();
 
   private:
+	Window &window;
+	
 	WGPUInstance instance;
 	WGPUAdapter adapter;
 	WGPUDevice device;
@@ -23,4 +26,4 @@ class Device {
 	WGPUDevice requestDeviceSync(WGPUDeviceDescriptor const *descriptor);
 };
 
-} // namespace renderer
+} // namespace bingusengine

@@ -1,12 +1,15 @@
 #include "device.hpp"
+#include "sdl3webgpu.h"
 #include "webgpu/webgpu.h"
+#include "window.hpp"
+#include <chrono>
 #include <iostream>
 #include <stdexcept>
 #include <thread>
-#include <chrono>
 
-namespace renderer {
-Device::Device() {
+namespace bingusengine {
+Device::Device(Window &window): window(window) {
+
 	createInstance();
 	std::cout << "created webgpu instance!" << std::endl;
 
@@ -39,6 +42,7 @@ void Device::createInstance() {
 
 void Device::getAdapter() {
 	WGPURequestAdapterOptions options{};
+	options.compatibleSurface = SDL_GetWGPUSurface(instance, window.getWindow());
 	options.nextInChain = nullptr;
 
 	struct UserData {
@@ -76,7 +80,7 @@ void Device::getAdapter() {
 }
 
 void Device::getDevice() {
-#if RENDERER_DISABLE_VALIDATION_LAYERS
+#ifdef bingusengine_DISABLE_VALIDATION_LAYERS
 	const char *disableToggles[] = {"skip_validation",
 									"enable_backend_validation"};
 	uint32_t disableCount = 2;
@@ -132,5 +136,5 @@ WGPUDevice Device::requestDeviceSync(WGPUDeviceDescriptor const *descriptor) {
 
 	return userData.device;
 }
-		
-}
+
+} // namespace bingusengine

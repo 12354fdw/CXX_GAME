@@ -1,10 +1,8 @@
-#include "renderer/device.hpp"
-#include "renderer/window.hpp"
+#include "renderer/renderer.hpp"
 #include <SDL3/SDL_events.h>
 
 int main() {
-	renderer::Window window = renderer::Window();
-	renderer::Device device = renderer::Device();
+	bingusengine::Renderer renderer = bingusengine::Renderer();
 
 	SDL_Event event;
 	bool running = true;

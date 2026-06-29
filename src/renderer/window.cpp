@@ -3,7 +3,7 @@
 #include <SDL3/SDL_video.h>
 #include <stdexcept>
 
-namespace renderer {
+namespace bingusengine {
 Window::Window() {
 	SDL_Init(SDL_INIT_VIDEO);
 
@@ -18,4 +18,4 @@ Window::~Window() {
 	SDL_Quit();
 }
 
-} // namespace renderer
+} // namespace bingusengine

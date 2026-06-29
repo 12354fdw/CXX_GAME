@@ -1,14 +1,16 @@
 #pragma once
 #include <SDL3/SDL_video.h>
 
-namespace renderer {
+namespace bingusengine {
 class Window {
   public:
 	Window();
 	~Window();
 
+	SDL_Window *getWindow() { return window; }
+
   private:
 	SDL_Window *window;
 };
 
-} // namespace renderer
+} // namespace bingusengine
