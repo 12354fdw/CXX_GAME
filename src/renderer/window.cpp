@@ -7,7 +7,7 @@ namespace bingusengine {
 Window::Window() {
 	SDL_Init(SDL_INIT_VIDEO);
 
-	window = SDL_CreateWindow("webgpurenderer", 640, 480, 0);
+	window = SDL_CreateWindow("webgpurenderer", 640, 480, SDL_WINDOW_RESIZABLE);
 	if (!window) {
 		throw std::runtime_error("unable to create a window!");
 	}

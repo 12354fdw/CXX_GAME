@@ -1,25 +1,28 @@
 #pragma once
 
 #include "device.hpp"
-#include "swapchain.hpp"
 #include "webgpu/webgpu.h"
 #include "window.hpp"
+#include <utility>
 
 namespace bingusengine {
 
-class Renderer {
+class Swapchain {
   public:
-	Renderer();
-	~Renderer();
+	Swapchain(Window &window, Device &device);
 
-	void renderFrame();
+	void configureSurface();
+	void present();
 
   private:
 	Window window;
 	Device device;
-	Swapchain swapchain;
 
 	WGPUSurface surface;
+
+	std::pair<WGPUSurfaceTexture, WGPUTextureView> getNextSurfaceViewData();
 };
 
 } // namespace bingusengine
+
+

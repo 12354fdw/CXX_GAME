@@ -24,6 +24,7 @@ src/main.cpp
 src/renderer/device.cpp
 src/renderer/window.cpp
 src/renderer/renderer.cpp
+src/renderer/swapchain.cpp
 )
 
 target_link_libraries(cxxgame PRIVATE

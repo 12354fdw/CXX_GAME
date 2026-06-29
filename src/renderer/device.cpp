@@ -13,10 +13,10 @@ Device::Device(Window &window): window(window) {
 	createInstance();
 	std::cout << "created webgpu instance!" << std::endl;
 
-	getAdapter();
+	_getAdapter();
 	std::cout << "got webgpu adapter!" << std::endl;
 
-	getDevice();
+	_getDevice();
 	std::cout << "got webgpu device!" << std::endl;
 
 	queue = wgpuDeviceGetQueue(device);
@@ -40,7 +40,7 @@ void Device::createInstance() {
 	}
 }
 
-void Device::getAdapter() {
+void Device::_getAdapter() {
 	WGPURequestAdapterOptions options{};
 	options.compatibleSurface = SDL_GetWGPUSurface(instance, window.getWindow());
 	options.nextInChain = nullptr;
@@ -79,7 +79,7 @@ void Device::getAdapter() {
 	std::cout << "GPU Selected: " << properties.name << std::endl;
 }
 
-void Device::getDevice() {
+void Device::_getDevice() {
 #ifdef bingusengine_DISABLE_VALIDATION_LAYERS
 	const char *disableToggles[] = {"skip_validation",
 									"enable_backend_validation"};

@@ -11,6 +11,11 @@ class Device {
 	Device(Window &window);
 	~Device();
 
+	// getters
+	WGPUInstance getInstance() { return instance; }
+	WGPUAdapter getAdapter() { return adapter; }
+	WGPUDevice getDevice() { return device; }
+
   private:
 	Window &window;
 	
@@ -20,9 +25,9 @@ class Device {
 	WGPUQueue queue;
 
 	void createInstance();
-	void getAdapter();
-	void getDevice();
-
+	void _getAdapter();
+	void _getDevice();
+	
 	WGPUDevice requestDeviceSync(WGPUDeviceDescriptor const *descriptor);
 };
 
