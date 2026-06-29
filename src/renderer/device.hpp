@@ -23,4 +23,4 @@ class Device {
 	WGPUDevice requestDeviceSync(WGPUDeviceDescriptor const *descriptor);
 };
 
-}
+} // namespace renderer

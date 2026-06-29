@@ -13,9 +13,15 @@ add_compile_options(
 )
 add_subdirectory(webgpu)
 
+find_package(SDL3 REQUIRED)
+
 add_executable(cxxgame
 src/main.cpp
 src/renderer/device.cpp
+src/renderer/window.cpp
 )
 
-target_link_libraries(cxxgame PRIVATE webgpu)
+target_link_libraries(cxxgame PRIVATE
+	webgpu
+	SDL3::SDL3
+)
