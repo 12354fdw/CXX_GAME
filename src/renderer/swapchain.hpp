@@ -9,17 +9,18 @@ namespace bingusengine {
 class Swapchain {
   public:
 	Swapchain(Device &device, WGPUSurface &surface);
+	~Swapchain();
 
 	void configureSurface();
+
+	WGPUSurfaceCapabilities getSurfaceCapabilities();
 
 	std::pair<WGPUSurfaceTexture, WGPUTextureView> getNextSurfaceViewData();
 
   private:
-	Device device;
+	Device &device;
 
-	WGPUSurface surface;
+	WGPUSurface &surface;
 };
 
 } // namespace bingusengine
-
-

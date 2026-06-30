@@ -1,5 +1,7 @@
 #include "renderer.hpp"
+#include "dawn/dawn_proc_table.h"
 #include "device.hpp"
+#include "pipeline.hpp"
 #include "sdl3webgpu.h"
 #include "swapchain.hpp"
 #include "webgpu/webgpu.h"
@@ -7,10 +9,10 @@
 
 namespace bingusengine {
 
-Renderer::Renderer(Window *window)
-	: device(*window),
-	  surface(SDL_GetWGPUSurface(device.getInstance(), window->getWindow())),
-	  swapchain(device, surface) {
+Renderer::Renderer()
+	: window(), device(window),
+	  surface(SDL_GetWGPUSurface(device.getInstance(), window.getWindow())),
+	  swapchain(device, surface), mainPipeline(device, swapchain) {
 	swapchain.configureSurface();
 	  }
 
@@ -45,11 +47,15 @@ void Renderer::renderFrame() {
 	renderPassDesc.colorAttachmentCount = 1;
 	renderPassDesc.colorAttachments = &renderPassColorAttachment;
 
-	WGPURenderPassEncoder renderPass =
+	WGPURenderPassEncoder renderPassEncoder =
 		wgpuCommandEncoderBeginRenderPass(encoder, &renderPassDesc);
 
-	wgpuRenderPassEncoderEnd(renderPass);
-	wgpuRenderPassEncoderRelease(renderPass);
+	// set pipeline
+	wgpuRenderPassEncoderSetPipeline(renderPassEncoder, mainPipeline.getPipeline());
+	wgpuRenderPassEncoderDraw(renderPassEncoder, 3, 1, 0, 0);
+
+	wgpuRenderPassEncoderEnd(renderPassEncoder);
+	wgpuRenderPassEncoderRelease(renderPassEncoder);
 
 	// command buffer!
 	WGPUCommandBufferDescriptor cmdBufferDesc{};

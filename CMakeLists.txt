@@ -25,6 +25,7 @@ src/renderer/device.cpp
 src/renderer/window.cpp
 src/renderer/renderer.cpp
 src/renderer/swapchain.cpp
+src/renderer/pipeline.cpp
 )
 
 

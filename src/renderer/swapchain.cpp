@@ -6,13 +6,13 @@ namespace bingusengine {
 Swapchain::Swapchain(Device &device, WGPUSurface &surface)
 	: device(device), surface(surface) {}
 
+Swapchain::~Swapchain() {}
+
 void Swapchain::configureSurface() {
 	WGPUSurfaceConfiguration config{};
 	config.nextInChain = nullptr;
 
-	WGPUSurfaceCapabilities capabilities{};
-	wgpuSurfaceGetCapabilities(surface, device.getAdapter(), &capabilities);
-
+	WGPUSurfaceCapabilities capabilities = getSurfaceCapabilities();
 	config.format = capabilities.formats[0];
 
 	config.viewFormatCount = 0;
@@ -31,13 +31,20 @@ void Swapchain::configureSurface() {
 	wgpuSurfaceCapabilitiesFreeMembers(capabilities);
 }
 
+WGPUSurfaceCapabilities Swapchain::getSurfaceCapabilities() {
+	WGPUSurfaceCapabilities capabilities{};
+	wgpuSurfaceGetCapabilities(surface, device.getAdapter(), &capabilities);
+
+	return capabilities;
+}
+
 std::pair<WGPUSurfaceTexture, WGPUTextureView>
 Swapchain::getNextSurfaceViewData() {
 	WGPUSurfaceTexture surfaceTexture;
 	wgpuSurfaceGetCurrentTexture(surface, &surfaceTexture);
 
 	if (surfaceTexture.status != WGPUSurfaceGetCurrentTextureStatus_Success) {
-		return { surfaceTexture, nullptr };
+		return {surfaceTexture, nullptr};
 	}
 
 	WGPUTextureViewDescriptor viewDesc{};
@@ -54,7 +61,7 @@ Swapchain::getNextSurfaceViewData() {
 	WGPUTextureView targetView =
 		wgpuTextureCreateView(surfaceTexture.texture, &viewDesc);
 
-	return { surfaceTexture, targetView };
+	return {surfaceTexture, targetView};
 }
 
 } // namespace bingusengine

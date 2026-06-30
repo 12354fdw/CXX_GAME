@@ -27,10 +27,10 @@ Device::Device(Window &window) : window(window) {
 
 Device::~Device() {
 	// tmp solution to fix double free
-	// wgpuQueueRelease(queue);
-	// wgpuDeviceRelease(device);
-	// wgpuAdapterRelease(adapter);
-	// wgpuInstanceRelease(instance);
+	wgpuQueueRelease(queue);
+	wgpuDeviceRelease(device);
+	wgpuAdapterRelease(adapter);
+	wgpuInstanceRelease(instance);
 }
 
 void Device::submitCommandBuffer(WGPUCommandBuffer cmdBuffer) {

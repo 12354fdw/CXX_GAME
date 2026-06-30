@@ -4,8 +4,7 @@
 
 
 int main() {
-	bingusengine::Window *window = new bingusengine::Window();
-	bingusengine::Renderer *renderer = new bingusengine::Renderer(window);
+	bingusengine::Renderer *renderer = new bingusengine::Renderer();
 
 	SDL_Event event;
 	bool running = true;
@@ -19,7 +18,7 @@ int main() {
 	}
 
 	// i don't want to deal with a double free and also the OS already clears the memory when it exits
-	// delete renderer;
+	delete renderer;
 
 	return 0;
 }

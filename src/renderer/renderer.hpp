@@ -1,6 +1,7 @@
 #pragma once
 
 #include "device.hpp"
+#include "pipeline.hpp"
 #include "swapchain.hpp"
 #include "webgpu/webgpu.h"
 #include "window.hpp"
@@ -9,17 +10,18 @@ namespace bingusengine {
 
 class Renderer {
   public:
-	Renderer(Window *window);
+	Renderer();
 	~Renderer();
 
 	void renderFrame();
 
   private:
-	Window *window;
+	Window window;
 	Device device;
 
 	WGPUSurface surface;
 	Swapchain swapchain;
+	Pipeline mainPipeline;
 
 	WGPUCommandEncoder createCommandEncoder();
 };
