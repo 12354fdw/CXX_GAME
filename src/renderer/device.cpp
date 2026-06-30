@@ -26,7 +26,6 @@ Device::Device(Window &window) : window(window) {
 }
 
 Device::~Device() {
-	// tmp solution to fix double free
 	wgpuQueueRelease(queue);
 	wgpuDeviceRelease(device);
 	wgpuAdapterRelease(adapter);

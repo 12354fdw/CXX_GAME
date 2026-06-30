@@ -1,5 +1,4 @@
 #include "renderer.hpp"
-#include "dawn/dawn_proc_table.h"
 #include "device.hpp"
 #include "pipeline.hpp"
 #include "sdl3webgpu.h"
@@ -17,7 +16,9 @@ Renderer::Renderer()
 	  }
 
 Renderer::~Renderer() {
-	wgpuSurfaceUnconfigure(surface); }
+	wgpuSurfaceUnconfigure(surface);
+	wgpuSurfaceRelease(surface);
+}
 
 void Renderer::renderFrame() {
 
@@ -65,7 +66,6 @@ void Renderer::renderFrame() {
 	WGPUCommandBuffer cmdBuffer =
 		wgpuCommandEncoderFinish(encoder, &cmdBufferDesc);
 	
-
 	// submit it!
 	device.submitCommandBuffer(cmdBuffer);
 
