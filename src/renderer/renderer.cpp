@@ -11,7 +11,8 @@ namespace bingusengine {
 Renderer::Renderer()
 	: window(), device(window),
 	  surface(SDL_GetWGPUSurface(device.getInstance(), window.getWindow())),
-	  swapchain(device, surface), mainPipeline(device, swapchain) {
+	  swapchain(device, window, surface),
+	  mainPipeline(device, swapchain) {
 	swapchain.configureSurface();
 	  }
 
@@ -41,7 +42,7 @@ void Renderer::renderFrame() {
 
 	renderPassColorAttachment.loadOp = WGPULoadOp_Clear;
 	renderPassColorAttachment.storeOp = WGPUStoreOp_Store;
-	renderPassColorAttachment.clearValue = WGPUColor{0.9, 0.1, 0.2, 1.0};
+	renderPassColorAttachment.clearValue = WGPUColor{0.0, 0.0, 0.0, 1.0};
 
 	// end of background color
 
@@ -52,7 +53,10 @@ void Renderer::renderFrame() {
 		wgpuCommandEncoderBeginRenderPass(encoder, &renderPassDesc);
 
 	// set pipeline
-	wgpuRenderPassEncoderSetPipeline(renderPassEncoder, mainPipeline.getPipeline());
+	wgpuRenderPassEncoderSetPipeline(renderPassEncoder,
+									 mainPipeline.getPipeline());
+
+	// draw call
 	wgpuRenderPassEncoderDraw(renderPassEncoder, 3, 1, 0, 0);
 
 	wgpuRenderPassEncoderEnd(renderPassEncoder);
@@ -72,7 +76,9 @@ void Renderer::renderFrame() {
 	wgpuCommandEncoderRelease(encoder);
 	wgpuCommandBufferRelease(cmdBuffer);
 
+	// present
 	wgpuSurfacePresent(surface);
+
 	wgpuTextureRelease(surfaceTexture.texture);
 	wgpuTextureViewRelease(targetView);
 }

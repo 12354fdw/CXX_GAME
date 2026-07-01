@@ -8,7 +8,7 @@ namespace bingusengine {
 
 class Swapchain {
   public:
-	Swapchain(Device &device, WGPUSurface &surface);
+	Swapchain(Device &device, Window &window, WGPUSurface &surface);
 	~Swapchain();
 
 	void configureSurface();
@@ -19,6 +19,7 @@ class Swapchain {
 
   private:
 	Device &device;
+	Window &window;
 
 	WGPUSurface &surface;
 };

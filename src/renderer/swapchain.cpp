@@ -1,14 +1,18 @@
 #include "swapchain.hpp"
 #include "device.hpp"
 #include "webgpu/webgpu.h"
+#include <SDL3/SDL_video.h>
+#include <iostream>
 
 namespace bingusengine {
-Swapchain::Swapchain(Device &device, WGPUSurface &surface)
-	: device(device), surface(surface) {}
+Swapchain::Swapchain(Device &device, Window &window, WGPUSurface &surface)
+	: device(device), window(window), surface(surface) {}
 
 Swapchain::~Swapchain() {}
 
 void Swapchain::configureSurface() {
+	std::cout << "reconfiguring surface" << std::endl;
+	
 	WGPUSurfaceConfiguration config{};
 	config.nextInChain = nullptr;
 
@@ -24,8 +28,11 @@ void Swapchain::configureSurface() {
 	config.presentMode = WGPUPresentMode_Fifo;
 	config.alphaMode = WGPUCompositeAlphaMode_Auto;
 
-	config.width = 640;
-	config.height = 480;
+	int w, h;
+	SDL_GetWindowSize(window.getWindow(), &w, &h);
+
+	config.width = w;
+	config.height = h;
 
 	wgpuSurfaceConfigure(surface, &config);
 	wgpuSurfaceCapabilitiesFreeMembers(capabilities);
@@ -44,6 +51,7 @@ Swapchain::getNextSurfaceViewData() {
 	wgpuSurfaceGetCurrentTexture(surface, &surfaceTexture);
 
 	if (surfaceTexture.status != WGPUSurfaceGetCurrentTextureStatus_Success) {
+		configureSurface();
 		return {surfaceTexture, nullptr};
 	}
 

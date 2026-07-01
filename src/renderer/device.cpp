@@ -87,7 +87,7 @@ void Device::setupAdapter() {
 }
 
 void Device::setupDevice() {
-#ifdef bingusengine_DISABLE_VALIDATION_LAYERS
+#ifdef NDEBUG
 	const char *disableToggles[] = {"skip_validation",
 									"enable_backend_validation"};
 	uint32_t disableCount = 2;
