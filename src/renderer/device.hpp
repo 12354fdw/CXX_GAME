@@ -15,6 +15,7 @@ class Device {
 	WGPUInstance getInstance() { return instance; }
 	WGPUAdapter getAdapter() { return adapter; }
 	WGPUDevice getDevice() { return device; }
+	WGPUQueue getQueue() { return queue; }
 
 	void submitCommandBuffer(WGPUCommandBuffer cmdBuffer);
 

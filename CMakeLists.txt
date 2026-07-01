@@ -26,6 +26,7 @@ src/renderer/window.cpp
 src/renderer/renderer.cpp
 src/renderer/swapchain.cpp
 src/renderer/pipeline.cpp
+src/renderer/buffer.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
