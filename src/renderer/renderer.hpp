@@ -27,8 +27,8 @@ class Renderer {
 
 	Buffer<float> vertexBuffer =
 		Buffer<float>(device, WGPUBufferUsage_CopyDst | WGPUBufferUsage_Vertex,
-			   6 * sizeof(float));
-
+					  15 * sizeof(float));
+	
 	WGPUCommandEncoder createCommandEncoder();
 };
 

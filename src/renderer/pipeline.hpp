@@ -13,7 +13,7 @@ class Pipeline {
 		WGPUVertexBufferLayout layouts;
 		size_t count;
 	};
-	
+
   public:
 	Pipeline(Device &device, Swapchain &swapchain);
 	~Pipeline();
@@ -26,7 +26,8 @@ class Pipeline {
 
 	WGPURenderPipeline pipeline;
 
-	VertexBufferLayoutInfo getBufferLayouts();
+	std::vector<WGPUVertexAttribute> vertexAttributes;
+	VertexBufferLayoutInfo getVertexBufferLayouts();
 
 	void initializePipeline();
 

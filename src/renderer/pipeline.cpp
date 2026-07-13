@@ -6,12 +6,13 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 namespace bingusengine {
 Pipeline::Pipeline(Device &device, Swapchain &swapchain)
 	: device(device), swapchain(swapchain) {
 	initializePipeline();
-	}
+}
 
 Pipeline::~Pipeline() {}
 void Pipeline::initializePipeline() {
@@ -25,25 +26,31 @@ void Pipeline::initializePipeline() {
 	initDepthStencilStage(pipelineDesc);
 	initMultisampling(pipelineDesc);
 
-	pipeline = wgpuDeviceCreateRenderPipeline(device.getDevice(), &pipelineDesc);
+	pipeline =
+		wgpuDeviceCreateRenderPipeline(device.getDevice(), &pipelineDesc);
 
 	wgpuShaderModuleRelease(shaderModule);
 }
 
-Pipeline::VertexBufferLayoutInfo Pipeline::getBufferLayouts() {
+Pipeline::VertexBufferLayoutInfo Pipeline::getVertexBufferLayouts() {
 	Pipeline::VertexBufferLayoutInfo info{};
 
 	WGPUVertexBufferLayout vertexBufferLayout{};
 
-	WGPUVertexAttribute vertexBuffer_Attribute1;
-	vertexBuffer_Attribute1.shaderLocation = 0;
-	vertexBuffer_Attribute1.format = WGPUVertexFormat_Float32x2;
-	vertexBuffer_Attribute1.offset = 0;
+	vertexAttributes.push_back(
+		(WGPUVertexAttribute){.format = WGPUVertexFormat_Float32x2,
+							  .offset = 0,
+							  .shaderLocation = 0}); // position
+	
+	vertexAttributes.push_back(
+		(WGPUVertexAttribute){.format = WGPUVertexFormat_Float32x3,
+							  .offset = 0,
+							  .shaderLocation = 1}); // color
 
-	vertexBufferLayout.attributes = &vertexBuffer_Attribute1;
-	vertexBufferLayout.attributeCount = 1;
+	vertexBufferLayout.attributes = vertexAttributes.data();
+	vertexBufferLayout.attributeCount = vertexAttributes.size();
 
-	vertexBufferLayout.arrayStride = 2 * sizeof(float);
+	vertexBufferLayout.arrayStride = 5 * sizeof(float);
 	vertexBufferLayout.stepMode = WGPUVertexStepMode_Vertex;
 
 	info.layouts = vertexBufferLayout;
@@ -54,7 +61,9 @@ Pipeline::VertexBufferLayoutInfo Pipeline::getBufferLayouts() {
 
 void Pipeline::initVertexStage(WGPURenderPipelineDescriptor &pipelineDesc,
 							   WGPUShaderModule &shaderModule) {
-	Pipeline::VertexBufferLayoutInfo vertexBufferLayout = getBufferLayouts();
+
+	Pipeline::VertexBufferLayoutInfo vertexBufferLayout =
+		getVertexBufferLayouts();
 
 	pipelineDesc.vertex.bufferCount = vertexBufferLayout.count;
 	pipelineDesc.vertex.buffers = &vertexBufferLayout.layouts;
@@ -93,7 +102,7 @@ void Pipeline::initFragmentStage(WGPURenderPipelineDescriptor &pipelineDesc,
 
 void Pipeline::initDepthStencilStage(
 	WGPURenderPipelineDescriptor &pipelineDesc) {
-	
+
 	pipelineDesc.depthStencil = nullptr;
 }
 

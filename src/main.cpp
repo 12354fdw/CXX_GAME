@@ -5,7 +5,12 @@
 int main() {
 	bingusengine::Renderer *renderer = new bingusengine::Renderer();
 	
-	std::vector<float> vertexData = {-0.5, -0.5, +0.5, -0.5, +0.0, +0.5};
+	std::vector<float> vertexData = {
+		// x0,   y0,  r0,  g0,  b0
+		-0.5, -0.5, 1.0, 0.0, 0.0,
+		+0.5, -0.5, 0.0, 1.0, 0.0,
+		+0.0, +0.5, 0.0, 0.0, 1.0,
+	};
 	renderer->getVertexBuffer().write(vertexData);
 
 	SDL_Event event;
