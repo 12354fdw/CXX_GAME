@@ -55,6 +55,7 @@ void Renderer::renderFrame() {
 	wgpuRenderPassEncoderSetPipeline(renderPassEncoder,
 									 mainPipeline.getPipeline());
 
+	// set vertex buffer
 	wgpuRenderPassEncoderSetVertexBuffer(renderPassEncoder, 0,
 										 vertexBuffer.getRawBuffer(), 0,
 										 vertexBuffer.getCapacity());
