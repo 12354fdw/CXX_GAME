@@ -4,6 +4,9 @@
 
 int main() {
 	bingusengine::Renderer *renderer = new bingusengine::Renderer();
+	
+	std::vector<float> vertexData = {-0.5, -0.5, +0.5, -0.5, +0.0, +0.5};
+	renderer->getVertexBuffer().write(vertexData);
 
 	SDL_Event event;
 	bool running = true;

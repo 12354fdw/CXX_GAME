@@ -1,9 +1,9 @@
 #pragma once
 
+#include "buffer.hpp"
 #include "device.hpp"
 #include "pipeline.hpp"
 #include "swapchain.hpp"
-#include "webgpu/webgpu.h"
 #include "window.hpp"
 
 namespace bingusengine {
@@ -14,6 +14,8 @@ class Renderer {
 	~Renderer();
 
 	void renderFrame();
+	
+	Buffer<float> &getVertexBuffer() { return vertexBuffer; }
 
   private:
 	Window window;
@@ -22,6 +24,10 @@ class Renderer {
 	WGPUSurface surface;
 	Swapchain swapchain;
 	Pipeline mainPipeline;
+
+	Buffer<float> vertexBuffer =
+		Buffer<float>(device, WGPUBufferUsage_CopyDst | WGPUBufferUsage_Vertex,
+			   6 * sizeof(float));
 
 	WGPUCommandEncoder createCommandEncoder();
 };

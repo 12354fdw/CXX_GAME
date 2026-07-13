@@ -30,10 +30,34 @@ void Pipeline::initializePipeline() {
 	wgpuShaderModuleRelease(shaderModule);
 }
 
+Pipeline::VertexBufferLayoutInfo Pipeline::getBufferLayouts() {
+	Pipeline::VertexBufferLayoutInfo info{};
+
+	WGPUVertexBufferLayout vertexBufferLayout{};
+
+	WGPUVertexAttribute vertexBuffer_Attribute1;
+	vertexBuffer_Attribute1.shaderLocation = 0;
+	vertexBuffer_Attribute1.format = WGPUVertexFormat_Float32x2;
+	vertexBuffer_Attribute1.offset = 0;
+
+	vertexBufferLayout.attributes = &vertexBuffer_Attribute1;
+	vertexBufferLayout.attributeCount = 1;
+
+	vertexBufferLayout.arrayStride = 2 * sizeof(float);
+	vertexBufferLayout.stepMode = WGPUVertexStepMode_Vertex;
+
+	info.layouts = vertexBufferLayout;
+	info.count = 1;
+
+	return info;
+}
+
 void Pipeline::initVertexStage(WGPURenderPipelineDescriptor &pipelineDesc,
 							   WGPUShaderModule &shaderModule) {
-	pipelineDesc.vertex.bufferCount = 0;
-	pipelineDesc.vertex.buffers = nullptr;
+	Pipeline::VertexBufferLayoutInfo vertexBufferLayout = getBufferLayouts();
+
+	pipelineDesc.vertex.bufferCount = vertexBufferLayout.count;
+	pipelineDesc.vertex.buffers = &vertexBufferLayout.layouts;
 
 	pipelineDesc.vertex.module = shaderModule;
 	pipelineDesc.vertex.entryPoint = "vs_main";
@@ -69,7 +93,7 @@ void Pipeline::initFragmentStage(WGPURenderPipelineDescriptor &pipelineDesc,
 
 void Pipeline::initDepthStencilStage(
 	WGPURenderPipelineDescriptor &pipelineDesc) {
-	// don't need to use this right now
+	
 	pipelineDesc.depthStencil = nullptr;
 }
 

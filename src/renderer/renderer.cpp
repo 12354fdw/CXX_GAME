@@ -1,9 +1,9 @@
 #include "renderer.hpp"
+#include "dawn/dawn_proc_table.h"
 #include "device.hpp"
 #include "pipeline.hpp"
 #include "sdl3webgpu.h"
 #include "swapchain.hpp"
-#include "webgpu/webgpu.h"
 #include "window.hpp"
 
 namespace bingusengine {
@@ -11,10 +11,9 @@ namespace bingusengine {
 Renderer::Renderer()
 	: window(), device(window),
 	  surface(SDL_GetWGPUSurface(device.getInstance(), window.getWindow())),
-	  swapchain(device, window, surface),
-	  mainPipeline(device, swapchain) {
+	  swapchain(device, window, surface), mainPipeline(device, swapchain) {
 	swapchain.configureSurface();
-	  }
+}
 
 Renderer::~Renderer() {
 	wgpuSurfaceUnconfigure(surface);
@@ -42,7 +41,7 @@ void Renderer::renderFrame() {
 
 	renderPassColorAttachment.loadOp = WGPULoadOp_Clear;
 	renderPassColorAttachment.storeOp = WGPUStoreOp_Store;
-	renderPassColorAttachment.clearValue = WGPUColor{0.0, 0.0, 0.0, 1.0};
+	renderPassColorAttachment.clearValue = WGPUColor{0.435, 0.752, 1.0, 1.0};
 
 	// end of background color
 
@@ -55,6 +54,10 @@ void Renderer::renderFrame() {
 	// set pipeline
 	wgpuRenderPassEncoderSetPipeline(renderPassEncoder,
 									 mainPipeline.getPipeline());
+
+	wgpuRenderPassEncoderSetVertexBuffer(renderPassEncoder, 0,
+										 vertexBuffer.getRawBuffer(), 0,
+										 vertexBuffer.getCapacity());
 
 	// draw call
 	wgpuRenderPassEncoderDraw(renderPassEncoder, 3, 1, 0, 0);

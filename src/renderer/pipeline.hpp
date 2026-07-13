@@ -3,10 +3,17 @@
 #include "device.hpp"
 #include "swapchain.hpp"
 #include "webgpu/webgpu.h"
+#include <cstddef>
 #include <string>
+
 namespace bingusengine {
 
 class Pipeline {
+	struct VertexBufferLayoutInfo {
+		WGPUVertexBufferLayout layouts;
+		size_t count;
+	};
+	
   public:
 	Pipeline(Device &device, Swapchain &swapchain);
 	~Pipeline();
@@ -18,6 +25,9 @@ class Pipeline {
 	Swapchain &swapchain;
 
 	WGPURenderPipeline pipeline;
+
+	VertexBufferLayoutInfo getBufferLayouts();
+
 	void initializePipeline();
 
 	void initVertexStage(WGPURenderPipelineDescriptor &pipelineDesc,
