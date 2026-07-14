@@ -1,6 +1,5 @@
 #pragma once
 
-#include "dawn/dawn_proc_table.h"
 #include "device.hpp"
 #include <string>
 #include <vector>

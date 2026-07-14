@@ -12,42 +12,22 @@ add_compile_options(
     -Wno-c2y-extensions
 )
 
-find_package(SDL3 REQUIRED)
-
-set(DAWN_USE_WAYLAND ON)
-
-add_subdirectory(external/webgpu)
-add_subdirectory(external/sdl3webgpu)
-add_subdirectory(external/glm)
-
-add_executable(cxxgame
-src/main.cpp
-src/renderer/device.cpp
-src/renderer/window.cpp
-src/renderer/renderer.cpp
-src/renderer/swapchain.cpp
-src/renderer/pipeline.cpp
-src/renderer/mesh.cpp
-)
-
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_compile_options(cxxgame PRIVATE
-        -fsanitize=address
-        -fsanitize=undefined
-        -fno-omit-frame-pointer
-        -g
-		-O0
-    )
+    if(NOT MSVC)
+        add_compile_options(
+            -fsanitize=address
+            -fsanitize=undefined
+            -fno-omit-frame-pointer
+            -g
+            -O0
+        )
 
-    target_link_options(cxxgame PRIVATE
-        -fsanitize=address
-        -fsanitize=undefined
-    )
+        add_link_options(
+            -fsanitize=address
+            -fsanitize=undefined
+        )
+    endif()
 endif()
 
-target_link_libraries(cxxgame PRIVATE
-	webgpu
-	SDL3::SDL3
-	sdl3webgpu
-	glm::glm-header-only
-)
+add_subdirectory(src-renderer)
+add_subdirectory(src-client)

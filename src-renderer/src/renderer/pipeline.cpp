@@ -81,7 +81,7 @@ void Pipeline::initPrimitiveStage(WGPURenderPipelineDescriptor &pipelineDesc) {
 	pipelineDesc.primitive.stripIndexFormat =
 		WGPUIndexFormat::WGPUIndexFormat_Undefined;
 
-	pipelineDesc.primitive.frontFace = WGPUFrontFace::WGPUFrontFace_CW;
+	pipelineDesc.primitive.frontFace = WGPUFrontFace::WGPUFrontFace_CCW;
 	pipelineDesc.primitive.cullMode = WGPUCullMode::WGPUCullMode_None;
 }
 
