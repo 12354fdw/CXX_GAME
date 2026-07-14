@@ -50,6 +50,8 @@ void Device::setupAdapter() {
 	WGPURequestAdapterOptions options{};
 	options.compatibleSurface =
 		SDL_GetWGPUSurface(instance, window.getWindow());
+
+	// options.powerPreference = WGPUPowerPreference_HighPerformance;
 	options.nextInChain = nullptr;
 
 	struct UserData {

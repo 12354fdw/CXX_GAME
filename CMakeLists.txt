@@ -18,6 +18,7 @@ set(DAWN_USE_WAYLAND ON)
 
 add_subdirectory(external/webgpu)
 add_subdirectory(external/sdl3webgpu)
+add_subdirectory(external/glm)
 
 add_executable(cxxgame
 src/main.cpp
@@ -26,6 +27,7 @@ src/renderer/window.cpp
 src/renderer/renderer.cpp
 src/renderer/swapchain.cpp
 src/renderer/pipeline.cpp
+src/renderer/mesh.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -47,4 +49,5 @@ target_link_libraries(cxxgame PRIVATE
 	webgpu
 	SDL3::SDL3
 	sdl3webgpu
+	glm::glm-header-only
 )

@@ -1,10 +1,14 @@
 #include "renderer.hpp"
-#include "dawn/dawn_proc_table.h"
+#include "buffer.hpp"
 #include "device.hpp"
+#include "instance.hpp"
+#include "mesh.hpp"
 #include "pipeline.hpp"
 #include "sdl3webgpu.h"
 #include "swapchain.hpp"
+#include "webgpu/webgpu.h"
 #include "window.hpp"
+#include <cstdint>
 
 namespace bingusengine {
 
@@ -55,13 +59,24 @@ void Renderer::renderFrame() {
 	wgpuRenderPassEncoderSetPipeline(renderPassEncoder,
 									 mainPipeline.getPipeline());
 
-	// set vertex buffer
-	wgpuRenderPassEncoderSetVertexBuffer(renderPassEncoder, 0,
-										 vertexBuffer.getRawBuffer(), 0,
-										 vertexBuffer.getCapacity());
+	for (auto &instance : instances) {
+		const Mesh &mesh = instance.getMesh();
+		const Buffer<Vertex> &vertexBuffer = mesh.getVertexBuffer();
+		const Buffer<uint32_t> &indexBuffer = mesh.getIndexBuffer();
 
-	// draw call
-	wgpuRenderPassEncoderDraw(renderPassEncoder, 3, 1, 0, 0);
+		// vertex buffer
+		wgpuRenderPassEncoderSetVertexBuffer(
+			renderPassEncoder, 0, vertexBuffer.getRawBuffer(), 0,
+			vertexBuffer.getCapacity());
+
+		// index buffer
+		wgpuRenderPassEncoderSetIndexBuffer(
+			renderPassEncoder, mesh.getIndexBuffer().getRawBuffer(),
+			WGPUIndexFormat_Uint32, 0, indexBuffer.getCapacity());
+
+		// draw call
+		wgpuRenderPassEncoderDrawIndexed(renderPassEncoder, mesh.getIndexCount(), 1, 0, 0, 0);
+	}
 
 	wgpuRenderPassEncoderEnd(renderPassEncoder);
 	wgpuRenderPassEncoderRelease(renderPassEncoder);

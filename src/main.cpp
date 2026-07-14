@@ -1,17 +1,29 @@
+#include "renderer/instance.hpp"
+#include "renderer/mesh.hpp"
 #include "renderer/renderer.hpp"
 #include <SDL3/SDL_events.h>
+#include <cstdint>
+#include <vector>
 
 
 int main() {
 	bingusengine::Renderer *renderer = new bingusengine::Renderer();
-	
-	std::vector<float> vertexData = {
-		// x0,   y0,  r0,  g0,  b0
-		-0.5, -0.5, 1.0, 0.0, 0.0,
-		+0.5, -0.5, 0.0, 1.0, 0.0,
-		+0.0, +0.5, 0.0, 0.0, 1.0,
+
+	std::vector<bingusengine::Vertex> vertexData = {
+		{{-0.5, -0.5}, {1.0, 0.0, 0.0}},
+		{{+0.5, -0.5}, {0.0, 1.0, 0.0}},
+		{{+0.5, +0.5}, {0.0, 0.0, 1.0}},
+		{{-0.5, +0.5}, {1.0, 0.0, 1.0}},
 	};
-	renderer->getVertexBuffer().write(vertexData);
+
+	std::vector<uint32_t> indexData = {0, 1, 2, 0, 2, 3};
+	bingusengine::Mesh mesh =
+		bingusengine::Mesh(renderer->getDevice(), vertexData, indexData);
+	
+	bingusengine::Instance instance = bingusengine::Instance(mesh);
+
+	
+	renderer->instances.push_back(instance);
 
 	SDL_Event event;
 	bool running = true;

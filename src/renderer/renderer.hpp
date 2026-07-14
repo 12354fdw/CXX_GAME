@@ -1,10 +1,11 @@
 #pragma once
 
-#include "buffer.hpp"
 #include "device.hpp"
+#include "instance.hpp"
 #include "pipeline.hpp"
 #include "swapchain.hpp"
 #include "window.hpp"
+#include <vector>
 
 namespace bingusengine {
 
@@ -14,8 +15,10 @@ class Renderer {
 	~Renderer();
 
 	void renderFrame();
-	
-	Buffer<float> &getVertexBuffer() { return vertexBuffer; }
+
+	std::vector<Instance> instances;
+
+	const Device &getDevice() { return device; };
 
   private:
 	Window window;
@@ -24,10 +27,6 @@ class Renderer {
 	WGPUSurface surface;
 	Swapchain swapchain;
 	Pipeline mainPipeline;
-
-	Buffer<float> vertexBuffer =
-		Buffer<float>(device, WGPUBufferUsage_CopyDst | WGPUBufferUsage_Vertex,
-					  15 * sizeof(float));
 	
 	WGPUCommandEncoder createCommandEncoder();
 };

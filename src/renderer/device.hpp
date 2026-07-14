@@ -12,10 +12,15 @@ class Device {
 	~Device();
 
 	// getters
-	WGPUInstance getInstance() { return instance; }
-	WGPUAdapter getAdapter() { return adapter; }
-	WGPUDevice getDevice() { return device; }
-	WGPUQueue getQueue() { return queue; }
+	const WGPUInstance &getInstance() { return instance; }
+	const WGPUAdapter &getAdapter() { return adapter; }
+	const WGPUDevice &getDevice() { return device; }
+	const WGPUQueue &getQueue() { return queue; }
+
+	const WGPUInstance &getInstance() const { return instance; }
+	const WGPUAdapter &getAdapter() const { return adapter; }
+	const WGPUDevice &getDevice() const { return device; }
+	const WGPUQueue &getQueue() const { return queue; }
 
 	void submitCommandBuffer(WGPUCommandBuffer cmdBuffer);
 

@@ -10,7 +10,7 @@ namespace bingusengine {
 template <class T>
 class Buffer {
   public:
-	Buffer(Device &device, WGPUBufferUsageFlags usageFlags, size_t byteSize,
+	Buffer(const Device &device, WGPUBufferUsageFlags usageFlags, size_t byteSize,
 		   std::string label = "unnamed buffer")
 		: device(device) {
 		capacity = byteSize;
@@ -34,11 +34,11 @@ class Buffer {
 			this->rawBuffer, byteOffset, data.data(), byteSize);
 	}
 
-	WGPUBuffer getRawBuffer() { return rawBuffer; };
-	size_t getCapacity() { return capacity; }
+	const WGPUBuffer getRawBuffer() const { return rawBuffer; };
+	size_t getCapacity() const { return capacity; }
 
   private:
-	Device &device;
+	const Device &device;
 	WGPUBuffer rawBuffer = nullptr;
 
 	size_t capacity;
