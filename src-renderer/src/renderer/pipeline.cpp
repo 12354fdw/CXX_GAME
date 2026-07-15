@@ -1,6 +1,7 @@
 #include "pipeline.hpp"
 #include "device.hpp"
 #include "glm/ext/matrix_float4x4.hpp"
+#include "renderer/mesh.hpp"
 #include "swapchain.hpp"
 #include "utils.hpp"
 #include "webgpu/webgpu_cpp.h"
@@ -60,7 +61,7 @@ Pipeline::VertexBufferLayoutInfo Pipeline::getVertexBufferLayouts() {
 	vertexBufferLayout.attributes = vertexAttributes.data();
 	vertexBufferLayout.attributeCount = vertexAttributes.size();
 
-	vertexBufferLayout.arrayStride = 5 * sizeof(float);
+	vertexBufferLayout.arrayStride = sizeof(Vertex);
 	vertexBufferLayout.stepMode = wgpu::VertexStepMode::Vertex;
 
 	info.layouts = vertexBufferLayout;
