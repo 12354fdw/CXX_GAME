@@ -12,18 +12,22 @@ add_compile_options(
     -Wno-c2y-extensions
 )
 
-find_package(SDL3 REQUIRED)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    if(NOT MSVC)
+        add_compile_options(
+            -fsanitize=address
+            -fsanitize=undefined
+            -fno-omit-frame-pointer
+            -g
+            -O0
+        )
 
-add_subdirectory(external/webgpu)
-add_subdirectory(external/sdl3webgpu)
+        add_link_options(
+            -fsanitize=address
+            -fsanitize=undefined
+        )
+    endif()
+endif()
 
-add_executable(cxxgame
-src/main.cpp
-src/renderer/device.cpp
-src/renderer/window.cpp
-)
-
-target_link_libraries(cxxgame PRIVATE
-	webgpu
-	SDL3::SDL3
-)
+add_subdirectory(src-renderer)
+add_subdirectory(src-client)

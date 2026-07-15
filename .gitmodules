@@ -1,0 +1,6 @@
+[submodule "src-renderer/external/glm"]
+	path = src-renderer/external/glm
+	url = https://github.com/g-truc/glm.git
+[submodule "src-renderer/external/sdl3webgpu"]
+	path = src-renderer/external/sdl3webgpu
+	url = https://github.com/12354fdw/sdl3webgpu.git
