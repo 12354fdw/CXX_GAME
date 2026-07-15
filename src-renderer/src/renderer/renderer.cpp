@@ -1,6 +1,7 @@
 #include "renderer.hpp"
 #include "buffer.hpp"
 #include "device.hpp"
+#include "glm/ext/matrix_float4x4.hpp"
 #include "instance.hpp"
 #include "mesh.hpp"
 #include "pipeline.hpp"
@@ -56,10 +57,15 @@ void Renderer::renderFrame() {
 	// set pipeline
 	renderPassEncoder.SetPipeline(mainPipeline.getPipeline());
 
+	float aspectRatio = window.getAspectRatio();
 	for (auto &instance : instances) {
 		const Mesh &mesh = instance.getMesh();
 		const Buffer<Vertex> &vertexBuffer = mesh.getVertexBuffer();
 		const Buffer<uint32_t> &indexBuffer = mesh.getIndexBuffer();
+
+		// mvp
+		glm::mat4 mvp = camera.getMVPMatrix(instance, aspectRatio);
+		renderPassEncoder.SetImmediates(0, &mvp, sizeof(glm::mat4));
 
 		// vertex buffer
 		renderPassEncoder.SetVertexBuffer(0, vertexBuffer.getRawBuffer(), 0,

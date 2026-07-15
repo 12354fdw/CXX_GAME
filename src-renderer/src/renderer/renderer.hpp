@@ -3,6 +3,7 @@
 #include "device.hpp"
 #include "instance.hpp"
 #include "pipeline.hpp"
+#include "renderer/camera.hpp"
 #include "swapchain.hpp"
 #include "window.hpp"
 #include <vector>
@@ -13,6 +14,8 @@ class Renderer {
   public:
 	Renderer();
 	~Renderer();
+
+	Camera camera = Camera();
 
 	void renderFrame();
 

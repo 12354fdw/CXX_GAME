@@ -18,4 +18,10 @@ Window::~Window() {
 	SDL_Quit();
 }
 
+float Window::getAspectRatio() {
+	float min = 0.0f;
+	float max = 100.0f;
+	return SDL_GetWindowAspectRatio(window, &min, &max);
+}
+
 } // namespace bingusengine

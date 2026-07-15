@@ -8,6 +8,7 @@ class Window {
 	~Window();
 
 	SDL_Window *getWindow() { return window; }
+	float getAspectRatio();
 
   private:
 	SDL_Window *window;

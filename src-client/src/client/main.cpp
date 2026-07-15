@@ -1,3 +1,4 @@
+#include "glm/ext/vector_float3.hpp"
 #include "renderer/instance.hpp"
 #include "renderer/mesh.hpp"
 #include "renderer/renderer.hpp"
@@ -29,8 +30,9 @@ int main() {
 
 	bingusengine::Mesh mesh =
 		bingusengine::Mesh(renderer->getDevice(), vertexData, indexData);
-	
+
 	bingusengine::Instance instance = bingusengine::Instance(mesh);
+	instance.position = glm::vec3(0, 0, -2);
 
 	
 	renderer->instances.push_back(instance);

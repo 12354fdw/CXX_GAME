@@ -29,6 +29,7 @@ class Pipeline {
 
 	std::vector<wgpu::VertexAttribute> vertexAttributes;
 	VertexBufferLayoutInfo getVertexBufferLayouts();
+	void filloutPipelineLayoutDesc();
 
 	void initializePipeline();
 
@@ -45,6 +46,8 @@ class Pipeline {
 	wgpu::ShaderModule createShaderModule(std::string path);
 
 	std::string readFile(const char *path);
+
+	wgpu::PipelineLayoutDescriptor pipelineLayoutDesc{};
 
 	Pipeline::VertexBufferLayoutInfo vertexBufferLayout;
 	wgpu::FragmentState fragmenetState{};

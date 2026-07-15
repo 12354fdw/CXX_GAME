@@ -1,7 +1,8 @@
 #include "pipeline.hpp"
 #include "device.hpp"
-#include "utils.hpp"
+#include "glm/ext/matrix_float4x4.hpp"
 #include "swapchain.hpp"
+#include "utils.hpp"
 #include "webgpu/webgpu_cpp.h"
 #include <fstream>
 #include <sstream>
@@ -27,7 +28,18 @@ void Pipeline::initializePipeline() {
 	initDepthStencilStage(pipelineDesc);
 	initMultisampling(pipelineDesc);
 
+	filloutPipelineLayoutDesc();
+	pipelineDesc.layout =
+		device.getDevice().CreatePipelineLayout(&pipelineLayoutDesc);
+
 	pipeline = device.getDevice().CreateRenderPipeline(&pipelineDesc);
+}
+
+void Pipeline::filloutPipelineLayoutDesc() {
+	pipelineLayoutDesc.bindGroupLayoutCount = 0;
+	pipelineLayoutDesc.bindGroupLayouts = nullptr;
+
+	pipelineLayoutDesc.immediateSize = sizeof(glm::mat4);
 }
 
 Pipeline::VertexBufferLayoutInfo Pipeline::getVertexBufferLayouts() {
@@ -36,7 +48,7 @@ Pipeline::VertexBufferLayoutInfo Pipeline::getVertexBufferLayouts() {
 	wgpu::VertexBufferLayout vertexBufferLayout{};
 
 	vertexAttributes.push_back(
-		(wgpu::VertexAttribute){.format = wgpu::VertexFormat::Float32x2,
+		(wgpu::VertexAttribute){.format = wgpu::VertexFormat::Float32x3,
 								.offset = 0,
 								.shaderLocation = 0}); // position
 
@@ -71,7 +83,8 @@ void Pipeline::initVertexStage(wgpu::RenderPipelineDescriptor &pipelineDesc,
 	pipelineDesc.vertex.constants = nullptr;
 }
 
-void Pipeline::initPrimitiveStage(wgpu::RenderPipelineDescriptor &pipelineDesc) {
+void Pipeline::initPrimitiveStage(
+	wgpu::RenderPipelineDescriptor &pipelineDesc) {
 	pipelineDesc.primitive.topology = wgpu::PrimitiveTopology::TriangleList;
 
 	pipelineDesc.primitive.stripIndexFormat = wgpu::IndexFormat::Undefined;
