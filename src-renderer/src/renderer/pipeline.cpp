@@ -1,7 +1,8 @@
 #include "pipeline.hpp"
 #include "device.hpp"
+#include "utils.hpp"
 #include "swapchain.hpp"
-#include "webgpu/webgpu.h"
+#include "webgpu/webgpu_cpp.h"
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
@@ -16,9 +17,9 @@ Pipeline::Pipeline(Device &device, Swapchain &swapchain)
 
 Pipeline::~Pipeline() {}
 void Pipeline::initializePipeline() {
-	WGPUShaderModule shaderModule = createShaderModule("shader/main.wgsl");
+	wgpu::ShaderModule shaderModule = createShaderModule("shader/main.wgsl");
 
-	WGPURenderPipelineDescriptor pipelineDesc{};
+	wgpu::RenderPipelineDescriptor pipelineDesc{};
 
 	initVertexStage(pipelineDesc, shaderModule);
 	initPrimitiveStage(pipelineDesc);
@@ -26,32 +27,29 @@ void Pipeline::initializePipeline() {
 	initDepthStencilStage(pipelineDesc);
 	initMultisampling(pipelineDesc);
 
-	pipeline =
-		wgpuDeviceCreateRenderPipeline(device.getDevice(), &pipelineDesc);
-
-	wgpuShaderModuleRelease(shaderModule);
+	pipeline = device.getDevice().CreateRenderPipeline(&pipelineDesc);
 }
 
 Pipeline::VertexBufferLayoutInfo Pipeline::getVertexBufferLayouts() {
 	Pipeline::VertexBufferLayoutInfo info{};
 
-	WGPUVertexBufferLayout vertexBufferLayout{};
+	wgpu::VertexBufferLayout vertexBufferLayout{};
 
 	vertexAttributes.push_back(
-		(WGPUVertexAttribute){.format = WGPUVertexFormat_Float32x2,
-							  .offset = 0,
-							  .shaderLocation = 0}); // position
-	
+		(wgpu::VertexAttribute){.format = wgpu::VertexFormat::Float32x2,
+								.offset = 0,
+								.shaderLocation = 0}); // position
+
 	vertexAttributes.push_back(
-		(WGPUVertexAttribute){.format = WGPUVertexFormat_Float32x3,
-							  .offset = 0,
-							  .shaderLocation = 1}); // color
+		(wgpu::VertexAttribute){.format = wgpu::VertexFormat::Float32x3,
+								.offset = 0,
+								.shaderLocation = 1}); // color
 
 	vertexBufferLayout.attributes = vertexAttributes.data();
 	vertexBufferLayout.attributeCount = vertexAttributes.size();
 
 	vertexBufferLayout.arrayStride = 5 * sizeof(float);
-	vertexBufferLayout.stepMode = WGPUVertexStepMode_Vertex;
+	vertexBufferLayout.stepMode = wgpu::VertexStepMode::Vertex;
 
 	info.layouts = vertexBufferLayout;
 	info.count = 1;
@@ -59,11 +57,10 @@ Pipeline::VertexBufferLayoutInfo Pipeline::getVertexBufferLayouts() {
 	return info;
 }
 
-void Pipeline::initVertexStage(WGPURenderPipelineDescriptor &pipelineDesc,
-							   WGPUShaderModule &shaderModule) {
+void Pipeline::initVertexStage(wgpu::RenderPipelineDescriptor &pipelineDesc,
+							   wgpu::ShaderModule &shaderModule) {
 
-	Pipeline::VertexBufferLayoutInfo vertexBufferLayout =
-		getVertexBufferLayouts();
+	vertexBufferLayout = getVertexBufferLayouts();
 
 	pipelineDesc.vertex.bufferCount = vertexBufferLayout.count;
 	pipelineDesc.vertex.buffers = &vertexBufferLayout.layouts;
@@ -74,26 +71,23 @@ void Pipeline::initVertexStage(WGPURenderPipelineDescriptor &pipelineDesc,
 	pipelineDesc.vertex.constants = nullptr;
 }
 
-void Pipeline::initPrimitiveStage(WGPURenderPipelineDescriptor &pipelineDesc) {
-	pipelineDesc.primitive.topology =
-		WGPUPrimitiveTopology::WGPUPrimitiveTopology_TriangleList;
+void Pipeline::initPrimitiveStage(wgpu::RenderPipelineDescriptor &pipelineDesc) {
+	pipelineDesc.primitive.topology = wgpu::PrimitiveTopology::TriangleList;
 
-	pipelineDesc.primitive.stripIndexFormat =
-		WGPUIndexFormat::WGPUIndexFormat_Undefined;
+	pipelineDesc.primitive.stripIndexFormat = wgpu::IndexFormat::Undefined;
 
-	pipelineDesc.primitive.frontFace = WGPUFrontFace::WGPUFrontFace_CCW;
-	pipelineDesc.primitive.cullMode = WGPUCullMode::WGPUCullMode_None;
+	pipelineDesc.primitive.frontFace = wgpu::FrontFace::CCW;
+	pipelineDesc.primitive.cullMode = wgpu::CullMode::None;
 }
 
-void Pipeline::initFragmentStage(WGPURenderPipelineDescriptor &pipelineDesc,
-								 WGPUShaderModule &shaderModule) {
-	WGPUFragmentState fragmenetState{};
+void Pipeline::initFragmentStage(wgpu::RenderPipelineDescriptor &pipelineDesc,
+								 wgpu::ShaderModule &shaderModule) {
 	fragmenetState.module = shaderModule;
 	fragmenetState.entryPoint = "fs_main";
 	fragmenetState.constantCount = 0;
 	fragmenetState.constants = nullptr;
 
-	WGPUColorTargetState colorTarget = configureColorTarget();
+	colorTarget = configureColorTarget();
 	fragmenetState.targetCount = 1;
 	fragmenetState.targets = &colorTarget;
 
@@ -101,56 +95,50 @@ void Pipeline::initFragmentStage(WGPURenderPipelineDescriptor &pipelineDesc,
 }
 
 void Pipeline::initDepthStencilStage(
-	WGPURenderPipelineDescriptor &pipelineDesc) {
+	wgpu::RenderPipelineDescriptor &pipelineDesc) {
 
 	pipelineDesc.depthStencil = nullptr;
 }
 
-void Pipeline::initMultisampling(WGPURenderPipelineDescriptor &pipelineDesc) {
+void Pipeline::initMultisampling(wgpu::RenderPipelineDescriptor &pipelineDesc) {
 	pipelineDesc.multisample.count = 1;
 	pipelineDesc.multisample.mask = ~0u;
 	pipelineDesc.multisample.alphaToCoverageEnabled = false;
 }
 
-WGPUColorTargetState Pipeline::configureColorTarget() {
-	WGPUBlendState blendState{};
+wgpu::ColorTargetState Pipeline::configureColorTarget() {
 
 	// color
-	blendState.color.srcFactor = WGPUBlendFactor::WGPUBlendFactor_SrcAlpha;
-	blendState.color.dstFactor =
-		WGPUBlendFactor::WGPUBlendFactor_OneMinusSrcAlpha;
-	blendState.color.operation = WGPUBlendOperation::WGPUBlendOperation_Add;
+	blendState.color.srcFactor = wgpu::BlendFactor::SrcAlpha;
+	blendState.color.dstFactor = wgpu::BlendFactor::OneMinusSrcAlpha;
+	blendState.color.operation = wgpu::BlendOperation::Add;
 
 	// alpha
-	blendState.alpha.srcFactor = WGPUBlendFactor::WGPUBlendFactor_Zero;
-	blendState.alpha.dstFactor = WGPUBlendFactor::WGPUBlendFactor_One;
-	blendState.alpha.operation = WGPUBlendOperation::WGPUBlendOperation_Add;
+	blendState.alpha.srcFactor = wgpu::BlendFactor::Zero;
+	blendState.alpha.dstFactor = wgpu::BlendFactor::One;
+	blendState.alpha.operation = wgpu::BlendOperation::Add;
 
-	WGPUColorTargetState colorTarget{};
+	wgpu::ColorTargetState colorTarget{};
 
-	WGPUSurfaceCapabilities capabilities = swapchain.getSurfaceCapabilities();
+	wgpu::SurfaceCapabilities capabilities = swapchain.getSurfaceCapabilities();
 
 	colorTarget.format = capabilities.formats[0];
 	colorTarget.blend = &blendState;
-	colorTarget.writeMask = WGPUColorWriteMask::WGPUColorWriteMask_All;
+	colorTarget.writeMask = wgpu::ColorWriteMask::All;
 
-	wgpuSurfaceCapabilitiesFreeMembers(capabilities);
 	return colorTarget;
 }
 
-WGPUShaderModule Pipeline::createShaderModule(std::string path) {
-	WGPUShaderModuleDescriptor shaderDesc;
+wgpu::ShaderModule Pipeline::createShaderModule(std::string path) {
+	wgpu::ShaderModuleDescriptor shaderDesc;
 
-	WGPUShaderModuleWGSLDescriptor shaderCodeDesc{};
-	shaderCodeDesc.chain.next = nullptr;
-	shaderCodeDesc.chain.sType = WGPUSType_ShaderModuleWGSLDescriptor;
-
+	wgpu::ShaderSourceWGSL shaderCodeDesc{};
 	std::string shaderSource = readFile(path.c_str());
-	shaderCodeDesc.code = shaderSource.c_str();
+	shaderCodeDesc.code = WSTR(shaderSource);
 
-	shaderDesc.nextInChain = &shaderCodeDesc.chain;
+	shaderDesc.nextInChain = &shaderCodeDesc;
 
-	return wgpuDeviceCreateShaderModule(device.getDevice(), &shaderDesc);
+	return device.getDevice().CreateShaderModule(&shaderDesc);
 }
 
 std::string Pipeline::readFile(const char *path) {

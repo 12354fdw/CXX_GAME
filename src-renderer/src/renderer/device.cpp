@@ -1,14 +1,15 @@
 #include "device.hpp"
-#include "sdl3webgpu.h"
-#include "webgpu/webgpu.h"
+#include "sdl3webgpu.hpp"
+#include "webgpu/webgpu_cpp.h"
 #include "window.hpp"
-#include <chrono>
 #include <iostream>
 #include <stdexcept>
-#include <thread>
+#include <string_view>
 
 namespace bingusengine {
-Device::Device(Window &window) : window(window) {
+
+Device::Device(Window &window)
+	: window(window) {
 
 	createInstance();
 	std::cout << "created webgpu instance!" << std::endl;
@@ -17,75 +18,71 @@ Device::Device(Window &window) : window(window) {
 	std::cout << "got webgpu adapter!" << std::endl;
 
 	setupDevice();
-	std::cout << "got webgpu device!" << std::endl;
+	std::cout << "got upgrade my code into usingwebgpu device!" << std::endl;
 
-	setupErrorCallback();
-
-	queue = wgpuDeviceGetQueue(device);
+	queue = device.GetQueue();
 	std::cout << "got webgpu queue!" << std::endl;
 }
 
-Device::~Device() {
-	wgpuQueueRelease(queue);
-	wgpuDeviceRelease(device);
-	wgpuAdapterRelease(adapter);
-	wgpuInstanceRelease(instance);
-}
+Device::~Device() {}
 
-void Device::submitCommandBuffer(WGPUCommandBuffer cmdBuffer) {
-	wgpuQueueSubmit(queue, 1, &cmdBuffer);
+void Device::submitCommandBuffer(wgpu::CommandBuffer cmdBuffer) {
+	queue.Submit(1, &cmdBuffer);
 }
 
 void Device::createInstance() {
-	WGPUInstanceDescriptor desc{};
-	desc.nextInChain = nullptr;
+	wgpu::InstanceFeatureName timedWaitAny = wgpu::InstanceFeatureName::TimedWaitAny;
 
-	instance = wgpuCreateInstance(&desc);
+	wgpu::InstanceDescriptor desc{};
+	desc.requiredFeatureCount = 1;
+	desc.requiredFeatures = &timedWaitAny;
+
+	instance = wgpu::CreateInstance(&desc);
 	if (!instance) {
 		throw std::runtime_error("unable to create a webgpu instance!");
 	}
 }
 
 void Device::setupAdapter() {
-	WGPURequestAdapterOptions options{};
+	wgpu::RequestAdapterOptions options{};
 	options.compatibleSurface =
 		SDL_GetWGPUSurface(instance, window.getWindow());
+	
 
-	// options.powerPreference = WGPUPowerPreference_HighPerformance;
 	options.nextInChain = nullptr;
 
 	struct UserData {
-		WGPUAdapter adapter = nullptr;
+		wgpu::Adapter adapter = nullptr;
 		bool requestEnded = false;
 	};
 	UserData userData;
 
-	auto onAdaptorRequestEndedCallback =
-		[](WGPURequestAdapterStatus status, WGPUAdapter adapter,
-		   char const *message, void *pUserData) {
-			UserData &userData = *reinterpret_cast<UserData *>(pUserData);
+	auto onAdapterRequestEnded = [](wgpu::RequestAdapterStatus status,
+									wgpu::Adapter adapter,
+									wgpu::StringView message, void *userdata) {
+		UserData &userData = *reinterpret_cast<UserData *>(userdata);
 
-			if (status == WGPURequestAdapterStatus_Success) {
-				userData.adapter = adapter;
-			} else {
-				throw std::runtime_error("unable to get a webgpu adapter!");
-			}
-			userData.requestEnded = true;
-		};
+		if (status == wgpu::RequestAdapterStatus::Success) {
+			userData.adapter = adapter;
+		} else {
+			throw std::runtime_error("unable to get a webgpu adapter!");
+		}
+		userData.requestEnded = true;
+	};
 
-	wgpuInstanceRequestAdapter(
-		instance, &options, onAdaptorRequestEndedCallback, (void *)&userData);
+	wgpu::Future future = instance.RequestAdapter(
+		&options, wgpu::CallbackMode::WaitAnyOnly, onAdapterRequestEnded,
+		&userData);
 
-	while (!userData.requestEnded) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
-	}
+	instance.WaitAny(future, /*timeoutNS=*/10'000'000'000ULL);
 
 	adapter = userData.adapter;
 
 	// inspection
-	WGPUAdapterProperties properties{};
-	wgpuAdapterGetProperties(adapter, &properties);
-	std::cout << "GPU Selected: " << properties.name << std::endl;
+	wgpu::AdapterInfo adapterInfo{};
+	adapter.GetInfo(&adapterInfo);
+	std::cout << "GPU Selected: " << static_cast<std::string_view>(adapterInfo.device)
+			  << std::endl;
 }
 
 void Device::setupDevice() {
@@ -97,62 +94,63 @@ void Device::setupDevice() {
 	const char **disableToggles = nullptr;
 	uint32_t disableCount = 0;
 #endif
-	WGPUDawnTogglesDescriptor toggleDesc{};
-	toggleDesc.chain.sType = WGPUSType_DawnTogglesDescriptor;
-	toggleDesc.chain.next = nullptr;
+	wgpu::DawnTogglesDescriptor toggleDesc{};
+	toggleDesc.sType = wgpu::SType::DawnTogglesDescriptor;
+	toggleDesc.nextInChain = nullptr;
 	toggleDesc.disabledToggles = disableToggles;
 	toggleDesc.disabledToggleCount = disableCount;
 
-	WGPUDeviceDescriptor desc{};
+	wgpu::DeviceDescriptor desc{};
 	desc.label = "wgpu device lol";
+
 	desc.requiredFeatureCount = 0;
+	desc.requiredFeatures = nullptr;
+
 	desc.requiredLimits = nullptr;
 
-	desc.defaultQueue.nextInChain = nullptr;
 	desc.defaultQueue.label = "the default queue lol";
 
-	desc.nextInChain = reinterpret_cast<const WGPUChainedStruct *>(&toggleDesc);
+	desc.nextInChain = &toggleDesc;
+
+	desc.SetUncapturedErrorCallback(
+		[](const wgpu::Device &, wgpu::ErrorType type,
+		   wgpu::StringView message) {
+			std::cout << "DAWN Error: type " << static_cast<uint32_t>(type);
+			if (message.length != wgpu::kStrlen) {
+				std::cout << " (" << static_cast<std::string_view>(message)
+						  << ")";
+			}
+			std::cout << std::endl;
+		});
 
 	device = requestDeviceSync(&desc);
 }
 
-void Device::setupErrorCallback() {
-	auto onDeviceError = [](WGPUErrorType type, char const *message,
-							void * /* pUserData */) {
-		std::cout << "DAWN Error: type " << type;
-		if (message)
-			std::cout << " (" << message << ")";
-		std::cout << std::endl;
-	};
-	wgpuDeviceSetUncapturedErrorCallback(device, onDeviceError, nullptr);
-}
-
-WGPUDevice Device::requestDeviceSync(WGPUDeviceDescriptor const *descriptor) {
+wgpu::Device Device::requestDeviceSync(const wgpu::DeviceDescriptor *descriptor) {
 	struct UserData {
-		WGPUDevice device = nullptr;
+		wgpu::Device device = nullptr;
 		bool requestEnded = false;
 	};
 	UserData userData;
 
-	auto onDeviceRequestEndedCallback =
-		[](WGPURequestDeviceStatus status, WGPUDevice device,
-		   char const *message, void *pUserData) {
-			UserData &userData = *reinterpret_cast<UserData *>(pUserData);
+	auto onDeviceRequestEnded = [](wgpu::RequestDeviceStatus status,
+								  wgpu::Device device,
+								  wgpu::StringView message, void *userdata) {
+		UserData &userData = *reinterpret_cast<UserData *>(userdata);
 
-			if (status == WGPURequestDeviceStatus_Success) {
-				userData.device = device;
-			} else {
-				throw std::runtime_error("unable to get a webgpu device!");
-			}
-			userData.requestEnded = true;
-		};
+		if (status == wgpu::RequestDeviceStatus::Success) {
+			userData.device = device;
+		} else {
+			throw std::runtime_error("unable to get a webgpu device!");
+		}
+		userData.requestEnded = true;
+	};
 
-	wgpuAdapterRequestDevice(adapter, descriptor, onDeviceRequestEndedCallback,
-							 (void *)&userData);
+	wgpu::Future future = adapter.RequestDevice(
+		descriptor, wgpu::CallbackMode::WaitAnyOnly, onDeviceRequestEnded,
+		&userData);
 
-	while (!userData.requestEnded) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
-	}
+	adapter.GetInstance().WaitAny(future, /*timeoutNS=*/10'000'000'000ULL);
 
 	return userData.device;
 }

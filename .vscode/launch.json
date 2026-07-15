@@ -5,7 +5,7 @@
             "name": "Debug App",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/cxxgame",
+            "program": "${workspaceFolder}/build/src-client/cxxgame",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

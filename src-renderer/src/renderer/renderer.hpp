@@ -24,11 +24,11 @@ class Renderer {
 	Window window;
 	Device device;
 
-	WGPUSurface surface;
+	wgpu::Surface surface;
 	Swapchain swapchain;
 	Pipeline mainPipeline;
-	
-	WGPUCommandEncoder createCommandEncoder();
+
+	wgpu::CommandEncoder createCommandEncoder();
 };
 
 } // namespace bingusengine

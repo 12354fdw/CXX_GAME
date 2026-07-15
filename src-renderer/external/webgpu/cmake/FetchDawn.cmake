@@ -39,13 +39,8 @@ FetchContent_Declare(
 	DOWNLOAD_COMMAND
 		cd ${FETCHCONTENT_BASE_DIR}/dawn-src &&
 		git init &&
-		git fetch --depth=1 https://dawn.googlesource.com/dawn chromium/6536 &&
+		git fetch --depth=1 https://dawn.googlesource.com/dawn chromium/7949 &&
 		git reset --hard FETCH_HEAD
-
-	PATCH_COMMAND
-		"${CMAKE_COMMAND}" -E copy
-		"${CMAKE_CURRENT_LIST_DIR}/../patch/tools/fetch_dawn_dependencies.py"
-		tools
 )
 
 FetchContent_GetProperties(dawn)
@@ -205,7 +200,3 @@ foreach (Target ${AllDawnTargets})
 		endif()
 	endif()
 endforeach()
-
-# This is likely needed for other targets as well
-# TODO: Notify this upstream (is this still needed?)
-target_include_directories(dawn_utils PUBLIC "${CMAKE_BINARY_DIR}/_deps/dawn-src/src")

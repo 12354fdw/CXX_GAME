@@ -1,32 +1,32 @@
 #include "swapchain.hpp"
 #include "device.hpp"
-#include "webgpu/webgpu.h"
+#include "webgpu/webgpu_cpp.h"
 #include <SDL3/SDL_video.h>
 #include <iostream>
 
 namespace bingusengine {
-Swapchain::Swapchain(Device &device, Window &window, WGPUSurface &surface)
+Swapchain::Swapchain(Device &device, Window &window, wgpu::Surface &surface)
 	: device(device), window(window), surface(surface) {}
 
 Swapchain::~Swapchain() {}
 
 void Swapchain::configureSurface() {
 	std::cout << "reconfiguring surface" << std::endl;
-	
-	WGPUSurfaceConfiguration config{};
+
+	wgpu::SurfaceConfiguration config{};
 	config.nextInChain = nullptr;
 
-	WGPUSurfaceCapabilities capabilities = getSurfaceCapabilities();
+	wgpu::SurfaceCapabilities capabilities = getSurfaceCapabilities();
 	config.format = capabilities.formats[0];
 
 	config.viewFormatCount = 0;
 	config.viewFormats = nullptr;
 
-	config.usage = WGPUTextureUsage_RenderAttachment;
+	config.usage = wgpu::TextureUsage::RenderAttachment;
 	config.device = device.getDevice();
 
-	config.presentMode = WGPUPresentMode_Fifo;
-	config.alphaMode = WGPUCompositeAlphaMode_Auto;
+	config.presentMode = wgpu::PresentMode::Fifo;
+	config.alphaMode = wgpu::CompositeAlphaMode::Auto;
 
 	int w, h;
 	SDL_GetWindowSize(window.getWindow(), &w, &h);
@@ -34,40 +34,39 @@ void Swapchain::configureSurface() {
 	config.width = w;
 	config.height = h;
 
-	wgpuSurfaceConfigure(surface, &config);
-	wgpuSurfaceCapabilitiesFreeMembers(capabilities);
+	surface.Configure(&config);
 }
 
-WGPUSurfaceCapabilities Swapchain::getSurfaceCapabilities() {
-	WGPUSurfaceCapabilities capabilities{};
-	wgpuSurfaceGetCapabilities(surface, device.getAdapter(), &capabilities);
+wgpu::SurfaceCapabilities Swapchain::getSurfaceCapabilities() {
+	wgpu::SurfaceCapabilities capabilities{};
+	surface.GetCapabilities(device.getAdapter(), &capabilities);
 
 	return capabilities;
 }
 
-std::pair<WGPUSurfaceTexture, WGPUTextureView>
+std::pair<wgpu::SurfaceTexture, wgpu::TextureView>
 Swapchain::getNextSurfaceViewData() {
-	WGPUSurfaceTexture surfaceTexture;
-	wgpuSurfaceGetCurrentTexture(surface, &surfaceTexture);
+	wgpu::SurfaceTexture surfaceTexture;
+	surface.GetCurrentTexture(&surfaceTexture);
 
-	if (surfaceTexture.status != WGPUSurfaceGetCurrentTextureStatus_Success) {
+	if (surfaceTexture.status != wgpu::SurfaceGetCurrentTextureStatus::SuccessOptimal &&
+		surfaceTexture.status != wgpu::SurfaceGetCurrentTextureStatus::SuccessSuboptimal) {
 		configureSurface();
 		return {surfaceTexture, nullptr};
 	}
 
-	WGPUTextureViewDescriptor viewDesc{};
+	wgpu::TextureViewDescriptor viewDesc{};
 	viewDesc.nextInChain = nullptr;
 	viewDesc.label = "surface texture view";
-	viewDesc.format = WGPUTextureFormat_Undefined;
-	viewDesc.dimension = WGPUTextureViewDimension_2D;
+	viewDesc.format = wgpu::TextureFormat::Undefined;
+	viewDesc.dimension = wgpu::TextureViewDimension::e2D;
 	viewDesc.baseMipLevel = 0;
 	viewDesc.mipLevelCount = 1;
 	viewDesc.baseArrayLayer = 0;
 	viewDesc.arrayLayerCount = 1;
-	viewDesc.aspect = WGPUTextureAspect_All;
+	viewDesc.aspect = wgpu::TextureAspect::All;
 
-	WGPUTextureView targetView =
-		wgpuTextureCreateView(surfaceTexture.texture, &viewDesc);
+	wgpu::TextureView targetView = surfaceTexture.texture.CreateView(&viewDesc);
 
 	return {surfaceTexture, targetView};
 }

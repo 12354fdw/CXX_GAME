@@ -2,15 +2,16 @@
 
 #include "device.hpp"
 #include "swapchain.hpp"
-#include "webgpu/webgpu.h"
+#include "webgpu/webgpu_cpp.h"
 #include <cstddef>
 #include <string>
+#include <vector>
 
 namespace bingusengine {
 
 class Pipeline {
 	struct VertexBufferLayoutInfo {
-		WGPUVertexBufferLayout layouts;
+		wgpu::VertexBufferLayout layouts;
 		size_t count;
 	};
 
@@ -18,32 +19,38 @@ class Pipeline {
 	Pipeline(Device &device, Swapchain &swapchain);
 	~Pipeline();
 
-	WGPURenderPipeline getPipeline() { return pipeline; };
+	wgpu::RenderPipeline getPipeline() { return pipeline; };
 
   private:
 	Device &device;
 	Swapchain &swapchain;
 
-	WGPURenderPipeline pipeline;
+	wgpu::RenderPipeline pipeline;
 
-	std::vector<WGPUVertexAttribute> vertexAttributes;
+	std::vector<wgpu::VertexAttribute> vertexAttributes;
 	VertexBufferLayoutInfo getVertexBufferLayouts();
 
 	void initializePipeline();
 
-	void initVertexStage(WGPURenderPipelineDescriptor &pipelineDesc,
-						 WGPUShaderModule &shaderModule);
-	void initPrimitiveStage(WGPURenderPipelineDescriptor &pipelineDesc);
-	void initFragmentStage(WGPURenderPipelineDescriptor &pipelineDesc,
-						   WGPUShaderModule &shaderModule);
-	void initDepthStencilStage(WGPURenderPipelineDescriptor &pipelineDesc);
-	void initMultisampling(WGPURenderPipelineDescriptor &pipelineDesc);
+	void initVertexStage(wgpu::RenderPipelineDescriptor &pipelineDesc,
+						 wgpu::ShaderModule &shaderModule);
+	void initPrimitiveStage(wgpu::RenderPipelineDescriptor &pipelineDesc);
+	void initFragmentStage(wgpu::RenderPipelineDescriptor &pipelineDesc,
+						   wgpu::ShaderModule &shaderModule);
+	void initDepthStencilStage(wgpu::RenderPipelineDescriptor &pipelineDesc);
+	void initMultisampling(wgpu::RenderPipelineDescriptor &pipelineDesc);
 
-	WGPUColorTargetState configureColorTarget();
+	wgpu::ColorTargetState configureColorTarget();
 
-	WGPUShaderModule createShaderModule(std::string path);
+	wgpu::ShaderModule createShaderModule(std::string path);
 
 	std::string readFile(const char *path);
+
+	Pipeline::VertexBufferLayoutInfo vertexBufferLayout;
+	wgpu::FragmentState fragmenetState{};
+
+	wgpu::BlendState blendState{};
+	wgpu::ColorTargetState colorTarget;
 };
 
 } // namespace bingusengine

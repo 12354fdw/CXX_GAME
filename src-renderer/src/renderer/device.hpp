@@ -1,9 +1,7 @@
 #pragma once
 
-#include "webgpu/webgpu.h"
+#include "webgpu/webgpu_cpp.h"
 #include "window.hpp"
-#define WEBGPU_CPP_IMPLEMENTATION
-#include <webgpu/webgpu_cpp.h>
 
 namespace bingusengine {
 class Device {
@@ -12,32 +10,31 @@ class Device {
 	~Device();
 
 	// getters
-	const WGPUInstance &getInstance() { return instance; }
-	const WGPUAdapter &getAdapter() { return adapter; }
-	const WGPUDevice &getDevice() { return device; }
-	const WGPUQueue &getQueue() { return queue; }
+	const wgpu::Instance &getInstance() { return instance; }
+	const wgpu::Adapter &getAdapter() { return adapter; }
+	const wgpu::Device &getDevice() { return device; }
+	const wgpu::Queue &getQueue() { return queue; }
 
-	const WGPUInstance &getInstance() const { return instance; }
-	const WGPUAdapter &getAdapter() const { return adapter; }
-	const WGPUDevice &getDevice() const { return device; }
-	const WGPUQueue &getQueue() const { return queue; }
+	const wgpu::Instance &getInstance() const { return instance; }
+	const wgpu::Adapter &getAdapter() const { return adapter; }
+	const wgpu::Device &getDevice() const { return device; }
+	const wgpu::Queue &getQueue() const { return queue; }
 
-	void submitCommandBuffer(WGPUCommandBuffer cmdBuffer);
+	void submitCommandBuffer(wgpu::CommandBuffer cmdBuffer);
 
   private:
 	Window &window;
 
-	WGPUInstance instance;
-	WGPUAdapter adapter;
-	WGPUDevice device;
-	WGPUQueue queue;
+	wgpu::Instance instance;
+	wgpu::Adapter adapter;
+	wgpu::Device device;
+	wgpu::Queue queue;
 
 	void createInstance();
 	void setupAdapter();
 	void setupDevice();
-	void setupErrorCallback();
 
-	WGPUDevice requestDeviceSync(WGPUDeviceDescriptor const *descriptor);
+	wgpu::Device requestDeviceSync(const wgpu::DeviceDescriptor *descriptor);
 };
 
 } // namespace bingusengine
