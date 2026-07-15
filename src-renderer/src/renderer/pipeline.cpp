@@ -2,6 +2,8 @@
 #include "device.hpp"
 #include "glm/ext/matrix_float4x4.hpp"
 #include "renderer/mesh.hpp"
+#include "renderer/texture.hpp"
+#include "renderer/window.hpp"
 #include "swapchain.hpp"
 #include "utils.hpp"
 #include "webgpu/webgpu_cpp.h"
@@ -12,8 +14,8 @@
 #include <vector>
 
 namespace bingusengine {
-Pipeline::Pipeline(Device &device, Swapchain &swapchain)
-	: device(device), swapchain(swapchain) {
+Pipeline::Pipeline(Device &device, Window &window, Swapchain &swapchain)
+	: device(device), window(window), swapchain(swapchain) {
 	initializePipeline();
 }
 
@@ -96,22 +98,37 @@ void Pipeline::initPrimitiveStage(
 
 void Pipeline::initFragmentStage(wgpu::RenderPipelineDescriptor &pipelineDesc,
 								 wgpu::ShaderModule &shaderModule) {
-	fragmenetState.module = shaderModule;
-	fragmenetState.entryPoint = "fs_main";
-	fragmenetState.constantCount = 0;
-	fragmenetState.constants = nullptr;
+	fragmentState.module = shaderModule;
+	fragmentState.entryPoint = "fs_main";
+	fragmentState.constantCount = 0;
+	fragmentState.constants = nullptr;
 
 	colorTarget = configureColorTarget();
-	fragmenetState.targetCount = 1;
-	fragmenetState.targets = &colorTarget;
+	fragmentState.targetCount = 1;
+	fragmentState.targets = &colorTarget;
 
-	pipelineDesc.fragment = &fragmenetState;
+	pipelineDesc.fragment = &fragmentState;
 }
 
 void Pipeline::initDepthStencilStage(
 	wgpu::RenderPipelineDescriptor &pipelineDesc) {
+	depthStencilState.depthCompare = wgpu::CompareFunction::Less;
+	depthStencilState.depthWriteEnabled = true;
 
-	pipelineDesc.depthStencil = nullptr;
+	wgpu::TextureFormat depthTextureFormat = wgpu::TextureFormat::Depth24Plus;
+	depthStencilState.format = depthTextureFormat;
+
+	depthStencilState.stencilReadMask = 0;
+	depthStencilState.stencilWriteMask = 0;
+
+	wgpu::Extent2D windowSize = window.getWindowSize();
+	
+	depthTexture.emplace(Texture(device, depthTextureFormat,
+								 wgpu::TextureAspect::DepthOnly,
+								 wgpu::TextureUsage::RenderAttachment,
+								 {windowSize.width, windowSize.height, 1}));
+	
+	pipelineDesc.depthStencil = &depthStencilState;
 }
 
 void Pipeline::initMultisampling(wgpu::RenderPipelineDescriptor &pipelineDesc) {

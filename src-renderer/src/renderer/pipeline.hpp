@@ -1,9 +1,12 @@
 #pragma once
 
 #include "device.hpp"
+#include "renderer/texture.hpp"
+#include "renderer/window.hpp"
 #include "swapchain.hpp"
 #include "webgpu/webgpu_cpp.h"
 #include <cstddef>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -16,16 +19,20 @@ class Pipeline {
 	};
 
   public:
-	Pipeline(Device &device, Swapchain &swapchain);
+	Pipeline(Device &device, Window &window, Swapchain &swapchain);
 	~Pipeline();
 
 	wgpu::RenderPipeline getPipeline() { return pipeline; };
 
+	const Texture &getDepthTexture() const { return depthTexture.value(); };
+
   private:
 	Device &device;
+	Window &window;
 	Swapchain &swapchain;
 
 	wgpu::RenderPipeline pipeline;
+	std::optional<Texture> depthTexture;
 
 	std::vector<wgpu::VertexAttribute> vertexAttributes;
 	VertexBufferLayoutInfo getVertexBufferLayouts();
@@ -50,7 +57,8 @@ class Pipeline {
 	wgpu::PipelineLayoutDescriptor pipelineLayoutDesc{};
 
 	Pipeline::VertexBufferLayoutInfo vertexBufferLayout;
-	wgpu::FragmentState fragmenetState{};
+	wgpu::FragmentState fragmentState{};
+	wgpu::DepthStencilState depthStencilState{};
 
 	wgpu::BlendState blendState{};
 	wgpu::ColorTargetState colorTarget;

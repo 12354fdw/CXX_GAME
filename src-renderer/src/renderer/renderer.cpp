@@ -16,7 +16,7 @@ namespace bingusengine {
 Renderer::Renderer()
 	: window(), device(window),
 	  surface(SDL_GetWGPUSurface(device.getInstance(), window.getWindow())),
-	  swapchain(device, window, surface), mainPipeline(device, swapchain) {
+	  swapchain(device, window, surface), mainPipeline(device, window, swapchain) {
 	swapchain.configureSurface();
 }
 
@@ -50,6 +50,23 @@ void Renderer::renderFrame() {
 
 	renderPassDesc.colorAttachmentCount = 1;
 	renderPassDesc.colorAttachments = &renderPassColorAttachment;
+
+	// depth texture
+	wgpu::RenderPassDepthStencilAttachment depthStencilAttachment{};
+	depthStencilAttachment.view =
+		mainPipeline.getDepthTexture().getTextureView();
+
+	depthStencilAttachment.depthClearValue = 1.0f;
+
+	depthStencilAttachment.depthLoadOp = wgpu::LoadOp::Clear;
+	depthStencilAttachment.depthStoreOp = wgpu::StoreOp::Store;
+
+	depthStencilAttachment.stencilClearValue = 0;
+	depthStencilAttachment.stencilLoadOp = wgpu::LoadOp::Undefined;
+	depthStencilAttachment.stencilStoreOp = wgpu::StoreOp::Undefined;
+	depthStencilAttachment.stencilReadOnly = true;
+
+	renderPassDesc.depthStencilAttachment = &depthStencilAttachment;
 
 	wgpu::RenderPassEncoder renderPassEncoder =
 		encoder.BeginRenderPass(&renderPassDesc);

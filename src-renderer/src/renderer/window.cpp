@@ -1,4 +1,5 @@
 #include "window.hpp"
+#include "webgpu/webgpu_cpp.h"
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_video.h>
 #include <stdexcept>
@@ -22,6 +23,13 @@ float Window::getAspectRatio() {
 	float min = 0.0f;
 	float max = 100.0f;
 	return SDL_GetWindowAspectRatio(window, &min, &max);
+}
+
+wgpu::Extent2D Window::getWindowSize() {
+	int w, h;
+	SDL_GetWindowSize(window, &w, &h);
+
+	return {static_cast<uint32_t>(w), static_cast<uint32_t>(h)};
 }
 
 } // namespace bingusengine
