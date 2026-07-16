@@ -9,7 +9,7 @@
 #include <vector>
 
 namespace bingusengine {
-
+namespace renderer {
 class Renderer {
   public:
 	Renderer();
@@ -34,4 +34,5 @@ class Renderer {
 	wgpu::CommandEncoder createCommandEncoder();
 };
 
+} // namespace renderer
 } // namespace bingusengine

@@ -2,8 +2,9 @@
 
 #include "renderer/device.hpp"
 #include "webgpu/webgpu_cpp.h"
-namespace bingusengine {
 
+namespace bingusengine {
+namespace renderer {
 class Texture {
   public:
 	Texture(Device device, wgpu::TextureFormat format,
@@ -20,4 +21,5 @@ class Texture {
 	wgpu::TextureView textureView;
 };
 
+} // namespace renderer
 } // namespace bingusengine

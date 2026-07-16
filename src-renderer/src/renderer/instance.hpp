@@ -4,7 +4,7 @@
 #include "mesh.hpp"
 
 namespace bingusengine {
-
+namespace renderer {
 class Instance {
   public:
 	Instance(Mesh &mesh) : mesh(mesh) {};
@@ -19,4 +19,5 @@ class Instance {
 	Mesh &mesh;
 };
 
+} // namespace renderer
 } // namespace bingusengine

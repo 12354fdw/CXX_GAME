@@ -14,6 +14,7 @@
 #include <vector>
 
 namespace bingusengine {
+namespace renderer {
 Pipeline::Pipeline(Device &device, Window &window, Swapchain &swapchain)
 	: device(device), window(window), swapchain(swapchain) {
 	initializePipeline();
@@ -122,12 +123,12 @@ void Pipeline::initDepthStencilStage(
 	depthStencilState.stencilWriteMask = 0;
 
 	wgpu::Extent2D windowSize = window.getWindowSize();
-	
+
 	depthTexture.emplace(Texture(device, depthTextureFormat,
 								 wgpu::TextureAspect::DepthOnly,
 								 wgpu::TextureUsage::RenderAttachment,
 								 {windowSize.width, windowSize.height, 1}));
-	
+
 	pipelineDesc.depthStencil = &depthStencilState;
 }
 
@@ -186,4 +187,5 @@ std::string Pipeline::readFile(const char *path) {
 	return content;
 }
 
+} // namespace renderer
 } // namespace bingusengine

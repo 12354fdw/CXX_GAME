@@ -11,7 +11,7 @@
 #include <vector>
 
 namespace bingusengine {
-
+namespace renderer {
 class Pipeline {
 	struct VertexBufferLayoutInfo {
 		wgpu::VertexBufferLayout layouts;
@@ -64,4 +64,5 @@ class Pipeline {
 	wgpu::ColorTargetState colorTarget;
 };
 
+} // namespace renderer
 } // namespace bingusengine

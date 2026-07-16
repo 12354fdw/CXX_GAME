@@ -5,6 +5,7 @@
 #include <stdexcept>
 
 namespace bingusengine {
+namespace renderer {
 Window::Window() {
 	SDL_Init(SDL_INIT_VIDEO);
 
@@ -32,4 +33,5 @@ wgpu::Extent2D Window::getWindowSize() {
 	return {static_cast<uint32_t>(w), static_cast<uint32_t>(h)};
 }
 
+} // namespace renderer
 } // namespace bingusengine

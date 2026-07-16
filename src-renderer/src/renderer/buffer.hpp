@@ -6,9 +6,8 @@
 #include <vector>
 
 namespace bingusengine {
-
-template <class T>
-class Buffer {
+namespace renderer {
+template <class T> class Buffer {
   public:
 	Buffer(const Device &device, wgpu::BufferUsage usageFlags, size_t byteSize,
 		   std::string label = "unnamed buffer")
@@ -30,7 +29,7 @@ class Buffer {
 		uint32_t byteSize = data.size() * sizeof(T);
 
 		device.getQueue().WriteBuffer(rawBuffer, byteOffset, data.data(),
-									 byteSize);
+									  byteSize);
 	}
 
 	const wgpu::Buffer &getRawBuffer() const { return rawBuffer; };
@@ -43,4 +42,5 @@ class Buffer {
 	size_t capacity;
 };
 
+} // namespace renderer
 } // namespace bingusengine

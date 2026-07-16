@@ -7,9 +7,9 @@
 #include <string_view>
 
 namespace bingusengine {
+namespace renderer {
 
-Device::Device(Window &window)
-	: window(window) {
+Device::Device(Window &window) : window(window) {
 
 	createInstance();
 	std::cout << "created webgpu instance!" << std::endl;
@@ -31,7 +31,8 @@ void Device::submitCommandBuffer(wgpu::CommandBuffer cmdBuffer) {
 }
 
 void Device::createInstance() {
-	wgpu::InstanceFeatureName timedWaitAny = wgpu::InstanceFeatureName::TimedWaitAny;
+	wgpu::InstanceFeatureName timedWaitAny =
+		wgpu::InstanceFeatureName::TimedWaitAny;
 
 	wgpu::InstanceDescriptor desc{};
 	desc.requiredFeatureCount = 1;
@@ -47,7 +48,6 @@ void Device::setupAdapter() {
 	wgpu::RequestAdapterOptions options{};
 	options.compatibleSurface =
 		SDL_GetWGPUSurface(instance, window.getWindow());
-	
 
 	options.nextInChain = nullptr;
 
@@ -70,9 +70,9 @@ void Device::setupAdapter() {
 		userData.requestEnded = true;
 	};
 
-	wgpu::Future future = instance.RequestAdapter(
-		&options, wgpu::CallbackMode::WaitAnyOnly, onAdapterRequestEnded,
-		&userData);
+	wgpu::Future future =
+		instance.RequestAdapter(&options, wgpu::CallbackMode::WaitAnyOnly,
+								onAdapterRequestEnded, &userData);
 
 	instance.WaitAny(future, /*timeoutNS=*/10'000'000'000ULL);
 
@@ -81,8 +81,8 @@ void Device::setupAdapter() {
 	// inspection
 	wgpu::AdapterInfo adapterInfo{};
 	adapter.GetInfo(&adapterInfo);
-	std::cout << "GPU Selected: " << static_cast<std::string_view>(adapterInfo.device)
-			  << std::endl;
+	std::cout << "GPU Selected: "
+			  << static_cast<std::string_view>(adapterInfo.device) << std::endl;
 }
 
 void Device::setupDevice() {
@@ -112,21 +112,21 @@ void Device::setupDevice() {
 
 	desc.nextInChain = &toggleDesc;
 
-	desc.SetUncapturedErrorCallback(
-		[](const wgpu::Device &, wgpu::ErrorType type,
-		   wgpu::StringView message) {
-			std::cout << "DAWN Error: type " << static_cast<uint32_t>(type);
-			if (message.length != wgpu::kStrlen) {
-				std::cout << " (" << static_cast<std::string_view>(message)
-						  << ")";
-			}
-			std::cout << std::endl;
-		});
+	desc.SetUncapturedErrorCallback([](const wgpu::Device &,
+									   wgpu::ErrorType type,
+									   wgpu::StringView message) {
+		std::cout << "DAWN Error: type " << static_cast<uint32_t>(type);
+		if (message.length != wgpu::kStrlen) {
+			std::cout << " (" << static_cast<std::string_view>(message) << ")";
+		}
+		std::cout << std::endl;
+	});
 
 	device = requestDeviceSync(&desc);
 }
 
-wgpu::Device Device::requestDeviceSync(const wgpu::DeviceDescriptor *descriptor) {
+wgpu::Device
+Device::requestDeviceSync(const wgpu::DeviceDescriptor *descriptor) {
 	struct UserData {
 		wgpu::Device device = nullptr;
 		bool requestEnded = false;
@@ -134,8 +134,8 @@ wgpu::Device Device::requestDeviceSync(const wgpu::DeviceDescriptor *descriptor)
 	UserData userData;
 
 	auto onDeviceRequestEnded = [](wgpu::RequestDeviceStatus status,
-								  wgpu::Device device,
-								  wgpu::StringView message, void *userdata) {
+								   wgpu::Device device,
+								   wgpu::StringView message, void *userdata) {
 		UserData &userData = *reinterpret_cast<UserData *>(userdata);
 
 		if (status == wgpu::RequestDeviceStatus::Success) {
@@ -146,13 +146,14 @@ wgpu::Device Device::requestDeviceSync(const wgpu::DeviceDescriptor *descriptor)
 		userData.requestEnded = true;
 	};
 
-	wgpu::Future future = adapter.RequestDevice(
-		descriptor, wgpu::CallbackMode::WaitAnyOnly, onDeviceRequestEnded,
-		&userData);
+	wgpu::Future future =
+		adapter.RequestDevice(descriptor, wgpu::CallbackMode::WaitAnyOnly,
+							  onDeviceRequestEnded, &userData);
 
 	adapter.GetInstance().WaitAny(future, /*timeoutNS=*/10'000'000'000ULL);
 
 	return userData.device;
 }
 
+} // namespace renderer
 } // namespace bingusengine

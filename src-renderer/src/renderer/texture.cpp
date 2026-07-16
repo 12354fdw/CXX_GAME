@@ -2,6 +2,7 @@
 #include "webgpu/webgpu_cpp.h"
 
 namespace bingusengine {
+namespace renderer {
 
 Texture::Texture(Device device, wgpu::TextureFormat format,
 				 wgpu::TextureAspect textureAspect, wgpu::TextureUsage usage,
@@ -35,4 +36,5 @@ Texture::Texture(Device device, wgpu::TextureFormat format,
 	textureView = rawTexture.CreateView(&viewDesc);
 }
 
+} // namespace renderer
 } // namespace bingusengine

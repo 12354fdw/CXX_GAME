@@ -3,6 +3,7 @@
 #include <SDL3/SDL_video.h>
 
 namespace bingusengine {
+namespace renderer {
 class Window {
   public:
 	Window();
@@ -17,4 +18,5 @@ class Window {
 	SDL_Window *window;
 };
 
+} // namespace renderer
 } // namespace bingusengine

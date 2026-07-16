@@ -6,11 +6,10 @@
 #include <cstdint>
 #include <vector>
 
-
 int main() {
-	bingusengine::Renderer *renderer = new bingusengine::Renderer();
+	bingusengine::renderer::Renderer *renderer = new bingusengine::renderer::Renderer();
 
-	std::vector<bingusengine::Vertex> vertexData = {
+	std::vector<bingusengine::renderer::Vertex> vertexData = {
 		{{-1.0f, -1.0f, -1.0f}, {1.0f, 0.0f, 0.0f}},
 		{{+1.0f, -1.0f, -1.0f}, {0.0f, 1.0f, 0.0f}},
 		{{+1.0f, -1.0f, +1.0f}, {0.0f, 0.0f, 1.0f}},
@@ -28,10 +27,10 @@ int main() {
 		2, 3, 4,
 		3, 0, 4,
 	};
-	bingusengine::Mesh mesh =
-		bingusengine::Mesh(renderer->getDevice(), vertexData, indexData);
+	bingusengine::renderer::Mesh mesh =
+		bingusengine::renderer::Mesh(renderer->getDevice(), vertexData, indexData);
 
-	bingusengine::Instance instance = bingusengine::Instance(mesh);
+	bingusengine::renderer::Instance instance = bingusengine::renderer::Instance(mesh);
 	instance.position = glm::vec3(0, 0, -2);
 
 	renderer->instances.push_back(instance);

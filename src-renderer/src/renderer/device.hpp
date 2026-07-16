@@ -4,6 +4,7 @@
 #include "window.hpp"
 
 namespace bingusengine {
+namespace renderer {
 class Device {
   public:
 	Device(Window &window);
@@ -37,4 +38,5 @@ class Device {
 	wgpu::Device requestDeviceSync(const wgpu::DeviceDescriptor *descriptor);
 };
 
+} // namespace renderer
 } // namespace bingusengine

@@ -12,17 +12,17 @@
 #include <cstdint>
 
 namespace bingusengine {
+namespace renderer {
 
 Renderer::Renderer()
 	: window(), device(window),
 	  surface(SDL_GetWGPUSurface(device.getInstance(), window.getWindow())),
-	  swapchain(device, window, surface), mainPipeline(device, window, swapchain) {
+	  swapchain(device, window, surface),
+	  mainPipeline(device, window, swapchain) {
 	swapchain.configureSurface();
 }
 
-Renderer::~Renderer() {
-	surface.Unconfigure();
-}
+Renderer::~Renderer() { surface.Unconfigure(); }
 
 void Renderer::renderFrame() {
 
@@ -90,8 +90,8 @@ void Renderer::renderFrame() {
 
 		// index buffer
 		renderPassEncoder.SetIndexBuffer(mesh.getIndexBuffer().getRawBuffer(),
-										wgpu::IndexFormat::Uint32, 0,
-										indexBuffer.getCapacity());
+										 wgpu::IndexFormat::Uint32, 0,
+										 indexBuffer.getCapacity());
 
 		// draw call
 		renderPassEncoder.DrawIndexed(mesh.getIndexCount(), 1, 0, 0, 0);
@@ -121,4 +121,5 @@ wgpu::CommandEncoder Renderer::createCommandEncoder() {
 	return device.getDevice().CreateCommandEncoder(&desc);
 }
 
+} // namespace renderer
 } // namespace bingusengine

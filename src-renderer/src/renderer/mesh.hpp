@@ -6,6 +6,7 @@
 #include <vector>
 
 namespace bingusengine {
+namespace renderer {
 
 struct Vertex {
 	glm::vec3 position;
@@ -28,4 +29,5 @@ class Mesh {
 	uint32_t indexCount;
 };
 
+} // namespace renderer
 } // namespace bingusengine

@@ -5,7 +5,7 @@
 #include <utility>
 
 namespace bingusengine {
-
+namespace renderer {
 class Swapchain {
   public:
 	Swapchain(Device &device, Window &window, wgpu::Surface &surface);
@@ -24,4 +24,6 @@ class Swapchain {
 	wgpu::Surface &surface;
 };
 
+
+} // namespace renderer
 } // namespace bingusengine

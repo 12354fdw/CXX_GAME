@@ -8,6 +8,7 @@
 #include "glm/trigonometric.hpp"
 
 namespace bingusengine {
+namespace renderer {
 
 glm::mat4 Camera::getMVPMatrix(Instance instance, float aspectRatio) {
 	return getProjectionMatrix(aspectRatio) * getViewMatrix() *
@@ -37,7 +38,9 @@ glm::mat4 Camera::getViewMatrix() {
 }
 
 glm::mat4 Camera::getProjectionMatrix(float aspectRatio) {
-	return glm::perspective(glm::radians(FOV), aspectRatio, nearPlane, farPlane);
+	return glm::perspective(glm::radians(FOV), aspectRatio, nearPlane,
+							farPlane);
 }
 
+} // namespace renderer
 } // namespace bingusengine

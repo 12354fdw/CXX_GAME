@@ -5,7 +5,7 @@
 #include "renderer/instance.hpp"
 
 namespace bingusengine {
-
+namespace renderer {
 class Camera {
   public:
 	const glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -27,4 +27,5 @@ class Camera {
 	glm::mat4 getProjectionMatrix(float aspectRatio);
 };
 
+} // namespace renderer
 } // namespace bingusengine

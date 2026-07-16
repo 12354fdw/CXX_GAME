@@ -5,6 +5,7 @@
 #include <iostream>
 
 namespace bingusengine {
+namespace renderer {
 Swapchain::Swapchain(Device &device, Window &window, wgpu::Surface &surface)
 	: device(device), window(window), surface(surface) {}
 
@@ -49,8 +50,10 @@ Swapchain::getNextSurfaceViewData() {
 	wgpu::SurfaceTexture surfaceTexture;
 	surface.GetCurrentTexture(&surfaceTexture);
 
-	if (surfaceTexture.status != wgpu::SurfaceGetCurrentTextureStatus::SuccessOptimal &&
-		surfaceTexture.status != wgpu::SurfaceGetCurrentTextureStatus::SuccessSuboptimal) {
+	if (surfaceTexture.status !=
+			wgpu::SurfaceGetCurrentTextureStatus::SuccessOptimal &&
+		surfaceTexture.status !=
+			wgpu::SurfaceGetCurrentTextureStatus::SuccessSuboptimal) {
 		configureSurface();
 		return {surfaceTexture, nullptr};
 	}
@@ -71,4 +74,5 @@ Swapchain::getNextSurfaceViewData() {
 	return {surfaceTexture, targetView};
 }
 
+} // namespace renderer
 } // namespace bingusengine
