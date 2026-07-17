@@ -1,22 +1,22 @@
 #pragma once
 
 #include "glm/ext/vector_float3.hpp"
-#include "mesh.hpp"
+#include "renderer/model.hpp"
 
 namespace bingusengine {
 namespace renderer {
 class Instance {
   public:
-	Instance(Mesh &mesh) : mesh(mesh) {};
+	Instance(Model &model) : model(model) {};
 
-	Mesh &getMesh() { return mesh; };
+	Model &getModel() { return model; };
 
 	glm::vec3 scale = glm::vec3(1, 1, 1);
 	glm::vec3 rotation = glm::vec3(0, 0, 0);
 	glm::vec3 position = glm::vec3(0, 0, 0);
 
   private:
-	Mesh &mesh;
+	Model &model;
 };
 
 } // namespace renderer

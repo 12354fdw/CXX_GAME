@@ -25,6 +25,10 @@ target_include_directories(renderer PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
 )
 
+target_include_directories(renderer PUBLIC
+	external/
+)
+
 target_link_libraries(renderer PUBLIC
 	webgpu
 	SDL3::SDL3

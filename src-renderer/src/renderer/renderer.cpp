@@ -5,6 +5,7 @@
 #include "instance.hpp"
 #include "mesh.hpp"
 #include "pipeline.hpp"
+#include "renderer/model.hpp"
 #include "sdl3webgpu.hpp"
 #include "swapchain.hpp"
 #include "webgpu/webgpu_cpp.h"
@@ -76,25 +77,28 @@ void Renderer::renderFrame() {
 
 	float aspectRatio = window.getAspectRatio();
 	for (auto &instance : instances) {
-		const Mesh &mesh = instance.getMesh();
-		const Buffer<Vertex> &vertexBuffer = mesh.getVertexBuffer();
-		const Buffer<uint32_t> &indexBuffer = mesh.getIndexBuffer();
+		Model &model = instance.getModel();
 
-		// mvp
-		glm::mat4 mvp = camera.getMVPMatrix(instance, aspectRatio);
-		renderPassEncoder.SetImmediates(0, &mvp, sizeof(glm::mat4));
+		for (auto &mesh : model.getMeshes()) {
+			const Buffer<Vertex> &vertexBuffer = mesh.getVertexBuffer();
+			const Buffer<uint32_t> &indexBuffer = mesh.getIndexBuffer();
 
-		// vertex buffer
-		renderPassEncoder.SetVertexBuffer(0, vertexBuffer.getRawBuffer(), 0,
-										  vertexBuffer.getCapacity());
+			// mvp
+			glm::mat4 mvp = camera.getMVPMatrix(instance, aspectRatio);
+			renderPassEncoder.SetImmediates(0, &mvp, sizeof(glm::mat4));
 
-		// index buffer
-		renderPassEncoder.SetIndexBuffer(mesh.getIndexBuffer().getRawBuffer(),
-										 wgpu::IndexFormat::Uint32, 0,
-										 indexBuffer.getCapacity());
+			// vertex buffer
+			renderPassEncoder.SetVertexBuffer(0, vertexBuffer.getRawBuffer(), 0,
+											  vertexBuffer.getCapacity());
 
-		// draw call
-		renderPassEncoder.DrawIndexed(mesh.getIndexCount(), 1, 0, 0, 0);
+			// index buffer
+			renderPassEncoder.SetIndexBuffer(
+				mesh.getIndexBuffer().getRawBuffer(), wgpu::IndexFormat::Uint32,
+				0, indexBuffer.getCapacity());
+
+			// draw call
+			renderPassEncoder.DrawIndexed(mesh.getIndexCount(), 1, 0, 0, 0);
+		}
 	}
 
 	renderPassEncoder.End();

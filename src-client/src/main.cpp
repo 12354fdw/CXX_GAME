@@ -1,39 +1,23 @@
+#include "client/client.hpp"
 #include "glm/ext/vector_float3.hpp"
 #include "renderer/instance.hpp"
-#include "renderer/mesh.hpp"
+#include "renderer/model.hpp"
 #include "renderer/renderer.hpp"
 #include <SDL3/SDL_events.h>
-#include <cstdint>
 #include <vector>
 
 int main() {
-	bingusengine::renderer::Renderer *renderer = new bingusengine::renderer::Renderer();
+	bingusengine::client::Client client = bingusengine::client::Client();
 
-	std::vector<bingusengine::renderer::Vertex> vertexData = {
-		{{-1.0f, -1.0f, -1.0f}, {1.0f, 0.0f, 0.0f}},
-		{{+1.0f, -1.0f, -1.0f}, {0.0f, 1.0f, 0.0f}},
-		{{+1.0f, -1.0f, +1.0f}, {0.0f, 0.0f, 1.0f}},
-		{{-1.0f, -1.0f, +1.0f}, {1.0f, 1.0f, 0.0f}},
+	bingusengine::renderer::Model model =
+		bingusengine::renderer::Model(client.renderer.getDevice(), "./assets/primitiveMeshs/cube.obj");
 
-		{{ 0.0f, +1.0f,  0.0f}, {1.0f, 0.0f, 1.0f}},
-	};
+	bingusengine::renderer::Instance instance =
+		bingusengine::renderer::Instance(model);
+	
+	instance.position = glm::vec3(0, 0, -5);
 
-	std::vector<uint32_t> indexData = {
-		0, 2, 1,
-		0, 3, 2,
-
-		0, 1, 4,
-		1, 2, 4,
-		2, 3, 4,
-		3, 0, 4,
-	};
-	bingusengine::renderer::Mesh mesh =
-		bingusengine::renderer::Mesh(renderer->getDevice(), vertexData, indexData);
-
-	bingusengine::renderer::Instance instance = bingusengine::renderer::Instance(mesh);
-	instance.position = glm::vec3(0, 0, -2);
-
-	renderer->instances.push_back(instance);
+	client.renderer.instances.push_back(instance);
 
 	SDL_Event event;
 	bool running = true;
@@ -43,10 +27,8 @@ int main() {
 				running = false;
 			}
 		}
-		renderer->renderFrame();
+		client.renderer.renderFrame();
 	}
-
-	delete renderer;
 
 	return 0;
 }
