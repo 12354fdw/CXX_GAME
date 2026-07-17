@@ -10,7 +10,7 @@ int main() {
 	bingusengine::client::Client client = bingusengine::client::Client();
 
 	bingusengine::renderer::Model model =
-		bingusengine::renderer::Model(client.renderer.getDevice(), "./assets/primitiveMeshs/cube.obj");
+		bingusengine::renderer::Model(client.renderer.getDevice(), "./assets/primitiveMeshes/cube.obj");
 
 	bingusengine::renderer::Instance instance =
 		bingusengine::renderer::Instance(model);

@@ -1,6 +1,7 @@
 #include "pipeline.hpp"
 #include "device.hpp"
 #include "glm/ext/matrix_float4x4.hpp"
+#include "glm/ext/vector_float3.hpp"
 #include "renderer/mesh.hpp"
 #include "renderer/texture.hpp"
 #include "renderer/window.hpp"
@@ -58,7 +59,7 @@ Pipeline::VertexBufferLayoutInfo Pipeline::getVertexBufferLayouts() {
 
 	vertexAttributes.push_back(
 		(wgpu::VertexAttribute){.format = wgpu::VertexFormat::Float32x3,
-								.offset = 0,
+								.offset = sizeof(glm::vec3),
 								.shaderLocation = 1}); // color
 
 	vertexBufferLayout.attributes = vertexAttributes.data();

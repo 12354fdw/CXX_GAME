@@ -14,7 +14,7 @@ Model::Model(const Device &device, std::string objPath) {
 	tinyobj::ObjReader reader;
 
 	if (!reader.ParseFromFile(objPath, readerConf)) {
-		throw std::runtime_error("unable to find mesh file!");
+		throw std::runtime_error("unable to find obj file!");
 	}
 
 	auto &attrib = reader.GetAttrib();
@@ -33,7 +33,7 @@ Model::Model(const Device &device, std::string objPath) {
 			float vy = attrib.vertices[3 * idx.vertex_index + 1];
 			float vz = attrib.vertices[3 * idx.vertex_index + 2];
 
-			vertices.push_back({{vx, vy, vz}, {0.5f, 0.5f, 0.5f}});
+			vertices.push_back({{vx, vy, vz}, {0.65f, 0.65f, 0.65f}});
 
 			indices.push_back(static_cast<uint32_t>(i));
 		}
