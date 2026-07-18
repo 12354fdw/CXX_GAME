@@ -20,7 +20,7 @@ Renderer::Renderer()
 	  surface(SDL_GetWGPUSurface(device.getInstance(), window.getWindow())),
 	  swapchain(device, window, surface),
 	  mainPipeline(device, window, swapchain) {
-	swapchain.configureSurface();
+	swapchain.pipelines.push_back(mainPipeline);
 }
 
 Renderer::~Renderer() { surface.Unconfigure(); }

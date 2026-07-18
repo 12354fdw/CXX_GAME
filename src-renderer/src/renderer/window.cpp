@@ -28,7 +28,7 @@ float Window::getAspectRatio() {
 
 wgpu::Extent2D Window::getWindowSize() {
 	int w, h;
-	SDL_GetWindowSize(window, &w, &h);
+	SDL_GetWindowSizeInPixels(window, &w, &h);
 
 	return {static_cast<uint32_t>(w), static_cast<uint32_t>(h)};
 }

@@ -40,6 +40,16 @@ void Pipeline::initializePipeline() {
 	pipeline = device.getDevice().CreateRenderPipeline(&pipelineDesc);
 }
 
+void Pipeline::reconfigureDepthTexture() {
+	wgpu::Extent2D windowSize = window.getWindowSize();
+	wgpu::TextureFormat depthTextureFormat = wgpu::TextureFormat::Depth24Plus;
+
+	depthTexture.emplace(Texture(device, depthTextureFormat,
+								 wgpu::TextureAspect::DepthOnly,
+								 wgpu::TextureUsage::RenderAttachment,
+								 {windowSize.width, windowSize.height, 1}));
+}
+
 void Pipeline::filloutPipelineLayoutDesc() {
 	pipelineLayoutDesc.bindGroupLayoutCount = 0;
 	pipelineLayoutDesc.bindGroupLayouts = nullptr;

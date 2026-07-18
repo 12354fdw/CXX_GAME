@@ -10,6 +10,9 @@
 
 namespace bingusengine {
 namespace renderer {
+
+class Pipeline;
+
 class Renderer {
   public:
 	Renderer();

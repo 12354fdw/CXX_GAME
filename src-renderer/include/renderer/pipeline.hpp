@@ -12,6 +12,9 @@
 
 namespace bingusengine {
 namespace renderer {
+
+class Swapchain;
+
 class Pipeline {
 	struct VertexBufferLayoutInfo {
 		wgpu::VertexBufferLayout layouts;
@@ -21,6 +24,8 @@ class Pipeline {
   public:
 	Pipeline(Device &device, Window &window, Swapchain &swapchain);
 	~Pipeline();
+
+	void reconfigureDepthTexture();
 
 	wgpu::RenderPipeline getPipeline() { return pipeline; };
 

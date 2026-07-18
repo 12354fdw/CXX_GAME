@@ -29,13 +29,14 @@ void Swapchain::configureSurface() {
 	config.presentMode = wgpu::PresentMode::Fifo;
 	config.alphaMode = wgpu::CompositeAlphaMode::Auto;
 
-	int w, h;
-	SDL_GetWindowSize(window.getWindow(), &w, &h);
-
-	config.width = w;
-	config.height = h;
+	config.width = windowSize.width;
+	config.height = windowSize.height;
 
 	surface.Configure(&config);
+
+	for (auto &pipeline : pipelines) {
+		pipeline.get().reconfigureDepthTexture();
+	}
 }
 
 wgpu::SurfaceCapabilities Swapchain::getSurfaceCapabilities() {
@@ -47,6 +48,15 @@ wgpu::SurfaceCapabilities Swapchain::getSurfaceCapabilities() {
 
 std::pair<wgpu::SurfaceTexture, wgpu::TextureView>
 Swapchain::getNextSurfaceViewData() {
+	wgpu::Extent2D currentSize = window.getWindowSize();
+
+	if (currentSize.width != windowSize.width ||
+		currentSize.height != windowSize.height) {
+		windowSize = currentSize;
+
+		configureSurface();
+	}
+
 	wgpu::SurfaceTexture surfaceTexture;
 	surface.GetCurrentTexture(&surfaceTexture);
 
