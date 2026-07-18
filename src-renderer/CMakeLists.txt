@@ -16,17 +16,21 @@ add_subdirectory(external/glm)
 
 file(GLOB_RECURSE RENDERER_SOURCES
 	"src/*.cpp"
-	"src/*.hpp"
+	"include/*.hpp"
 )
 
 add_library(renderer STATIC ${RENDERER_SOURCES})
 
 target_include_directories(renderer PUBLIC 
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
 target_include_directories(renderer PUBLIC
 	external/
+)
+
+target_include_directories(renderer PRIVATE
+	include/renderer
 )
 
 target_link_libraries(renderer PUBLIC

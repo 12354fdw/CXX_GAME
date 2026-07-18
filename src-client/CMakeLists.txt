@@ -9,10 +9,14 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 file(GLOB_RECURSE CLIENT_SOURCES
 	"src/*.cpp"
-	"src/*.hpp"
+	"include/*.hpp"
 )
 
 add_executable(cxxgame ${CLIENT_SOURCES})
+
+target_include_directories(cxxgame PRIVATE
+    include/client
+)
 
 target_link_libraries(cxxgame PRIVATE
 	renderer

@@ -1,4 +1,4 @@
-#include "client/client.hpp"
+#include "client.hpp"
 #include <SDL3/SDL_events.h>
 #include <chrono>
 
