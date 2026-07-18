@@ -95,7 +95,7 @@ void Pipeline::initPrimitiveStage(
 	pipelineDesc.primitive.stripIndexFormat = wgpu::IndexFormat::Undefined;
 
 	pipelineDesc.primitive.frontFace = wgpu::FrontFace::CCW;
-	pipelineDesc.primitive.cullMode = wgpu::CullMode::None;
+	pipelineDesc.primitive.cullMode = wgpu::CullMode::Back;
 }
 
 void Pipeline::initFragmentStage(wgpu::RenderPipelineDescriptor &pipelineDesc,
