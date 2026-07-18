@@ -11,7 +11,7 @@ class Client {
 
 	bool running = true;
 
-	void tick(double dt);
+	void tick(float dt);
 
 	bingusengine::renderer::Renderer renderer =
 		bingusengine::renderer::Renderer();
@@ -22,6 +22,7 @@ class Client {
 
 	renderer::Instance testInstance = renderer::Instance(testModel);
 
+	void moveCamera(float dt);
 	void processSDLEvents();
 };
 
