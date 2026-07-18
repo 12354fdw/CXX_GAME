@@ -1,33 +1,18 @@
 #include "client/client.hpp"
-#include "glm/ext/vector_float3.hpp"
-#include "renderer/instance.hpp"
-#include "renderer/model.hpp"
-#include "renderer/renderer.hpp"
 #include <SDL3/SDL_events.h>
-#include <vector>
+#include <chrono>
 
 int main() {
 	bingusengine::client::Client client = bingusengine::client::Client();
 
-	bingusengine::renderer::Model model =
-		bingusengine::renderer::Model(client.renderer.getDevice(), "./assets/primitiveMeshes/cube.obj");
+	auto lastTime = std::chrono::steady_clock::now();
 
-	bingusengine::renderer::Instance instance =
-		bingusengine::renderer::Instance(model);
-	
-	instance.position = glm::vec3(0, 0, -5);
+	while (client.running) {
+		auto currentTime = std::chrono::steady_clock::now();
+		std::chrono::duration<double> dt = currentTime - lastTime;
 
-	client.renderer.instances.push_back(instance);
-
-	SDL_Event event;
-	bool running = true;
-	while (running) {
-		while (SDL_PollEvent(&event)) {
-			if (event.type == SDL_EVENT_QUIT) {
-				running = false;
-			}
-		}
-		client.renderer.renderFrame();
+		client.tick(dt.count());
+		lastTime = currentTime;
 	}
 
 	return 0;
