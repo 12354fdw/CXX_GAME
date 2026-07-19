@@ -17,8 +17,13 @@ Client::Client() {
 
 	floor.setColor(glm::vec4(0.0f, 0.7f, 0.0f, 1.0f));
 
+	glass.position = glm::vec3(1.0f, 0.0f, 0.0f);
+	glass.scale = glm::vec3(1.0f, 1, 0.1);
+	glass.setColor(glm::vec4(0.435, 0.752, 1.0, 0.5f));
+
 	renderer.instances.push_back(testInstance);
 	renderer.instances.push_back(floor);
+	renderer.instances.push_back(glass);
 }
 
 void Client::tick(float dt) {

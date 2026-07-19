@@ -23,9 +23,12 @@ class Client {
 
 	renderer::Instance testInstance =
 		renderer::Instance(renderer.getDevice(), testModel);
+
 	renderer::Instance floor =
 		renderer::Instance(renderer.getDevice(), testModel);
-	
+
+	renderer::Instance glass =
+		renderer::Instance(renderer.getDevice(), testModel);
 
 	void moveCamera(float dt);
 	void processSDLEvents();
