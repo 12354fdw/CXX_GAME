@@ -9,15 +9,15 @@ namespace bingusengine {
 namespace renderer {
 template <class T> class Buffer {
   public:
-	Buffer(const Device &device, wgpu::BufferUsage usageFlags, size_t byteSize,
+	Buffer(const Device &device, wgpu::BufferUsage usageFlags, size_t elementSize,
 		   std::string label = "unnamed buffer")
 		: device(device) {
-		capacity = byteSize;
+		capacity = elementSize * sizeof(T);
 
 		wgpu::BufferDescriptor desc{};
 		desc.label = WSTR(label);
 		desc.usage = usageFlags;
-		desc.size = byteSize;
+		desc.size = elementSize;
 		desc.mappedAtCreation = false;
 
 		rawBuffer = device.getDevice().CreateBuffer(&desc);

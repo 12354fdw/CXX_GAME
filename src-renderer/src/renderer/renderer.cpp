@@ -89,7 +89,6 @@ void Renderer::renderFrame() {
 			
 			ImmediateData immediate = {
 				.mvp = mvp,
-				.color = instance.color
 			};
 
 			renderPassEncoder.SetImmediates(0, &immediate, sizeof(ImmediateData));
