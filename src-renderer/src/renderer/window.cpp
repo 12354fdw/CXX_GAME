@@ -21,9 +21,8 @@ Window::~Window() {
 }
 
 float Window::getAspectRatio() {
-	float min = 0.0f;
-	float max = 100.0f;
-	return SDL_GetWindowAspectRatio(window, &min, &max);
+	wgpu::Extent2D windowSize = getWindowSize();
+	return static_cast<float>(windowSize.width) / windowSize.height;
 }
 
 wgpu::Extent2D Window::getWindowSize() {
