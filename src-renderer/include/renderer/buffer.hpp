@@ -17,7 +17,7 @@ template <class T> class Buffer {
 		wgpu::BufferDescriptor desc{};
 		desc.label = WSTR(label);
 		desc.usage = usageFlags;
-		desc.size = elementSize;
+		desc.size = elementSize * sizeof(T);
 		desc.mappedAtCreation = false;
 
 		rawBuffer = device.getDevice().CreateBuffer(&desc);
