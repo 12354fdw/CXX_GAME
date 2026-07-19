@@ -14,7 +14,6 @@ struct Vertex {
 
 struct ImmediateData {
 	glm::mat4 mvp;
-	glm::vec3 color;
 };
 
 } // namespace renderer
