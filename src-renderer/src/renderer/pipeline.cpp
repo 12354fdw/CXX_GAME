@@ -1,10 +1,9 @@
 #include "pipeline.hpp"
 #include "device.hpp"
-#include "glm/ext/matrix_float4x4.hpp"
 #include "glm/ext/vector_float3.hpp"
-#include "renderer/mesh.hpp"
 #include "renderer/texture.hpp"
 #include "renderer/window.hpp"
+#include "shaderStructs.hpp"
 #include "swapchain.hpp"
 #include "utils.hpp"
 #include "webgpu/webgpu_cpp.h"
@@ -54,7 +53,7 @@ void Pipeline::filloutPipelineLayoutDesc() {
 	pipelineLayoutDesc.bindGroupLayoutCount = 0;
 	pipelineLayoutDesc.bindGroupLayouts = nullptr;
 
-	pipelineLayoutDesc.immediateSize = sizeof(glm::mat4);
+	pipelineLayoutDesc.immediateSize = sizeof(ImmediateData);
 }
 
 Pipeline::VertexBufferLayoutInfo Pipeline::getVertexBufferLayouts() {
@@ -69,8 +68,13 @@ Pipeline::VertexBufferLayoutInfo Pipeline::getVertexBufferLayouts() {
 
 	vertexAttributes.push_back(
 		(wgpu::VertexAttribute){.format = wgpu::VertexFormat::Float32x3,
-								.offset = sizeof(glm::vec3),
+								.offset = sizeof(glm::vec3) * 1,
 								.shaderLocation = 1}); // color
+
+	vertexAttributes.push_back(
+		(wgpu::VertexAttribute){.format = wgpu::VertexFormat::Float32x3,
+								.offset = sizeof(glm::vec3) * 2,
+								.shaderLocation = 2}); // normal
 
 	vertexBufferLayout.attributes = vertexAttributes.data();
 	vertexBufferLayout.attributeCount = vertexAttributes.size();

@@ -7,6 +7,7 @@
 #include "pipeline.hpp"
 #include "renderer/model.hpp"
 #include "sdl3webgpu.hpp"
+#include "shaderStructs.hpp"
 #include "swapchain.hpp"
 #include "webgpu/webgpu_cpp.h"
 #include "window.hpp"
@@ -83,9 +84,15 @@ void Renderer::renderFrame() {
 			const Buffer<Vertex> &vertexBuffer = mesh.getVertexBuffer();
 			const Buffer<uint32_t> &indexBuffer = mesh.getIndexBuffer();
 
-			// mvp
+			// ImmediateData
 			glm::mat4 mvp = camera.getMVPMatrix(instance, aspectRatio);
-			renderPassEncoder.SetImmediates(0, &mvp, sizeof(glm::mat4));
+			
+			ImmediateData immediate = {
+				.mvp = mvp,
+				.color = instance.color
+			};
+
+			renderPassEncoder.SetImmediates(0, &immediate, sizeof(ImmediateData));
 
 			// vertex buffer
 			renderPassEncoder.SetVertexBuffer(0, vertexBuffer.getRawBuffer(), 0,

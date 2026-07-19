@@ -2,16 +2,11 @@
 
 #include "buffer.hpp"
 #include "device.hpp"
-#include "glm/ext/vector_float3.hpp"
+#include "shaderStructs.hpp"
 #include <vector>
 
 namespace bingusengine {
 namespace renderer {
-
-struct Vertex {
-	glm::vec3 position;
-	glm::vec3 color;
-};
 
 class Mesh {
   public:

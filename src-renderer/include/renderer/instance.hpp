@@ -15,6 +15,8 @@ class Instance {
 	glm::vec3 rotation = glm::vec3(0, 0, 0);
 	glm::vec3 position = glm::vec3(0, 0, 0);
 
+	glm::vec3 color = glm::vec3(0.65f, 0.65f, 0.65f);
+
   private:
 	Model &model;
 };

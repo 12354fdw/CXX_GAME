@@ -1,5 +1,4 @@
 #include "model.hpp"
-#include "renderer/mesh.hpp"
 #include <stdexcept>
 #include <vector>
 
@@ -33,7 +32,11 @@ Model::Model(const Device &device, std::string objPath) {
 			float vy = attrib.vertices[3 * idx.vertex_index + 1];
 			float vz = attrib.vertices[3 * idx.vertex_index + 2];
 
-			vertices.push_back({{vx, vy, vz}, {0.65f, 0.65f, 0.65f}});
+			float nx = attrib.normals[3 * idx.normal_index + 0];
+			float ny = attrib.normals[3 * idx.normal_index + 1];
+			float nz = attrib.normals[3 * idx.normal_index + 2];
+
+			vertices.push_back({{vx, vy, vz}, {0.65f, 0.65f, 0.65f}, {nx, ny, nz}});
 
 			indices.push_back(static_cast<uint32_t>(i));
 		}

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "renderer/instance.hpp"
 #include "renderer/model.hpp"
 #include "renderer/renderer.hpp"
 
@@ -21,6 +22,7 @@ class Client {
 		renderer.getDevice(), "./assets/primitiveMeshes/cube.obj");
 
 	renderer::Instance testInstance = renderer::Instance(testModel);
+	renderer::Instance floor = renderer::Instance(testModel);
 
 	void moveCamera(float dt);
 	void processSDLEvents();
