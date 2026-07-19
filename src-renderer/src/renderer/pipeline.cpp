@@ -56,36 +56,52 @@ void Pipeline::filloutPipelineLayoutDesc() {
 	pipelineLayoutDesc.immediateSize = sizeof(ImmediateData);
 }
 
-Pipeline::VertexBufferLayoutInfo Pipeline::getVertexBufferLayouts() {
-	Pipeline::VertexBufferLayoutInfo info{};
+std::vector<wgpu::VertexBufferLayout> Pipeline::getVertexBufferLayouts() {
+	std::vector<wgpu::VertexBufferLayout> vertexBufferLayouts;
 
-	wgpu::VertexBufferLayout vertexBufferLayout{};
+		// mesh layout
+	wgpu::VertexBufferLayout meshLayout{};
 
-	vertexAttributes.push_back(
+	meshAttributes.push_back(
 		(wgpu::VertexAttribute){.format = wgpu::VertexFormat::Float32x3,
 								.offset = 0,
 								.shaderLocation = 0}); // position
 
-	vertexAttributes.push_back(
+	meshAttributes.push_back(
 		(wgpu::VertexAttribute){.format = wgpu::VertexFormat::Float32x3,
 								.offset = sizeof(glm::vec3) * 1,
 								.shaderLocation = 1}); // color
 
-	vertexAttributes.push_back(
+	meshAttributes.push_back(
 		(wgpu::VertexAttribute){.format = wgpu::VertexFormat::Float32x3,
 								.offset = sizeof(glm::vec3) * 2,
 								.shaderLocation = 2}); // normal
 
-	vertexBufferLayout.attributes = vertexAttributes.data();
-	vertexBufferLayout.attributeCount = vertexAttributes.size();
+	meshLayout.attributes = meshAttributes.data();
+	meshLayout.attributeCount = meshAttributes.size();
 
-	vertexBufferLayout.arrayStride = sizeof(Vertex);
-	vertexBufferLayout.stepMode = wgpu::VertexStepMode::Vertex;
+	meshLayout.arrayStride = sizeof(Vertex);
+	meshLayout.stepMode = wgpu::VertexStepMode::Vertex;
 
-	info.layouts = vertexBufferLayout;
-	info.count = 1;
+	vertexBufferLayouts.push_back(meshLayout);
 
-	return info;
+	// instance layout
+	wgpu::VertexBufferLayout instanceLayout{};
+
+	instanceAttributes.push_back(
+		(wgpu::VertexAttribute){.format = wgpu::VertexFormat::Float32x4,
+								.offset = 0,
+								.shaderLocation = 3}); // tint
+
+	instanceLayout.attributes = instanceAttributes.data();
+	instanceLayout.attributeCount = instanceAttributes.size();
+
+	instanceLayout.arrayStride = sizeof(InstanceVertex);
+	instanceLayout.stepMode = wgpu::VertexStepMode::Instance;
+
+	vertexBufferLayouts.push_back(instanceLayout);
+
+	return vertexBufferLayouts;
 }
 
 void Pipeline::initVertexStage(wgpu::RenderPipelineDescriptor &pipelineDesc,
@@ -93,8 +109,8 @@ void Pipeline::initVertexStage(wgpu::RenderPipelineDescriptor &pipelineDesc,
 
 	vertexBufferLayout = getVertexBufferLayouts();
 
-	pipelineDesc.vertex.bufferCount = vertexBufferLayout.count;
-	pipelineDesc.vertex.buffers = &vertexBufferLayout.layouts;
+	pipelineDesc.vertex.bufferCount = vertexBufferLayout.size();
+	pipelineDesc.vertex.buffers = vertexBufferLayout.data();
 
 	pipelineDesc.vertex.module = shaderModule;
 	pipelineDesc.vertex.entryPoint = "vs_main";

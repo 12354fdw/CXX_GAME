@@ -2,6 +2,7 @@
 
 #include "glm/ext/matrix_float4x4.hpp"
 #include "glm/ext/vector_float3.hpp"
+#include "glm/ext/vector_float4.hpp"
 
 namespace bingusengine {
 namespace renderer {
@@ -12,6 +13,10 @@ struct Vertex {
 	glm::vec3 normal;
 };
 
+struct InstanceVertex {
+	glm::vec4 tint;
+}
+;
 struct ImmediateData {
 	glm::mat4 mvp;
 };

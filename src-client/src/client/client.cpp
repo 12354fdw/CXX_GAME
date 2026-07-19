@@ -1,5 +1,6 @@
 #include "client.hpp"
 #include "glm/ext/vector_float3.hpp"
+#include "glm/ext/vector_float4.hpp"
 #include "renderer/camera.hpp"
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_keyboard.h>
@@ -10,7 +11,14 @@ namespace client {
 
 Client::Client() {
 	testInstance.position = glm::vec3(0, 0, -5);
+
+	floor.position = glm::vec3(0.0f, -2.0f, 0.0f);
+	floor.scale = glm::vec3(100, 1, 100);
+
+	floor.setColor(glm::vec4(0.0f, 0.7f, 0.0f, 1.0f));
+
 	renderer.instances.push_back(testInstance);
+	renderer.instances.push_back(floor);
 }
 
 void Client::tick(float dt) {

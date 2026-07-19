@@ -5,7 +5,6 @@
 #include "renderer/window.hpp"
 #include "swapchain.hpp"
 #include "webgpu/webgpu_cpp.h"
-#include <cstddef>
 #include <optional>
 #include <string>
 #include <vector>
@@ -16,10 +15,6 @@ namespace renderer {
 class Swapchain;
 
 class Pipeline {
-	struct VertexBufferLayoutInfo {
-		wgpu::VertexBufferLayout layouts;
-		size_t count;
-	};
 
   public:
 	Pipeline(Device &device, Window &window, Swapchain &swapchain);
@@ -39,8 +34,10 @@ class Pipeline {
 	wgpu::RenderPipeline pipeline;
 	std::optional<Texture> depthTexture;
 
-	std::vector<wgpu::VertexAttribute> vertexAttributes;
-	VertexBufferLayoutInfo getVertexBufferLayouts();
+	std::vector<wgpu::VertexAttribute> meshAttributes;
+	std::vector<wgpu::VertexAttribute> instanceAttributes;
+
+	std::vector<wgpu::VertexBufferLayout> getVertexBufferLayouts();
 	void filloutPipelineLayoutDesc();
 
 	void initializePipeline();
@@ -61,7 +58,7 @@ class Pipeline {
 
 	wgpu::PipelineLayoutDescriptor pipelineLayoutDesc{};
 
-	Pipeline::VertexBufferLayoutInfo vertexBufferLayout;
+	std::vector<wgpu::VertexBufferLayout> vertexBufferLayout;
 	wgpu::FragmentState fragmentState{};
 	wgpu::DepthStencilState depthStencilState{};
 

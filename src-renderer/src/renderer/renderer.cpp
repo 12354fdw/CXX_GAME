@@ -83,10 +83,13 @@ void Renderer::renderFrame() {
 		for (auto &mesh : model.getMeshes()) {
 			const Buffer<Vertex> &vertexBuffer = mesh.getVertexBuffer();
 			const Buffer<uint32_t> &indexBuffer = mesh.getIndexBuffer();
-
-			// ImmediateData
-			glm::mat4 mvp = camera.getMVPMatrix(instance, aspectRatio);
 			
+			const Buffer<InstanceVertex> &instanceData =
+				instance.getInstanceVertexBuffer();
+
+				// ImmediateData
+				glm::mat4 mvp = camera.getMVPMatrix(instance, aspectRatio);
+
 			ImmediateData immediate = {
 				.mvp = mvp,
 			};
@@ -96,6 +99,8 @@ void Renderer::renderFrame() {
 			// vertex buffer
 			renderPassEncoder.SetVertexBuffer(0, vertexBuffer.getRawBuffer(), 0,
 											  vertexBuffer.getCapacity());
+
+			renderPassEncoder.SetVertexBuffer(1, instanceData.getRawBuffer(), 0, instanceData.getCapacity());
 
 			// index buffer
 			renderPassEncoder.SetIndexBuffer(

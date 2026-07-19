@@ -21,8 +21,11 @@ class Client {
 	renderer::Model testModel = renderer::Model(
 		renderer.getDevice(), "./assets/primitiveMeshes/cube.obj");
 
-	renderer::Instance testInstance = renderer::Instance(testModel);
-	renderer::Instance floor = renderer::Instance(testModel);
+	renderer::Instance testInstance =
+		renderer::Instance(renderer.getDevice(), testModel);
+	renderer::Instance floor =
+		renderer::Instance(renderer.getDevice(), testModel);
+	
 
 	void moveCamera(float dt);
 	void processSDLEvents();

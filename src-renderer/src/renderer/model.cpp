@@ -36,7 +36,7 @@ Model::Model(const Device &device, std::string objPath) {
 			float ny = attrib.normals[3 * idx.normal_index + 1];
 			float nz = attrib.normals[3 * idx.normal_index + 2];
 
-			vertices.push_back({{vx, vy, vz}, {0.65f, 0.65f, 0.65f}, {nx, ny, nz}});
+			vertices.push_back({{vx, vy, vz}, {1.0f, 1.0f, 1.0f}, {nx, ny, nz}});
 
 			indices.push_back(static_cast<uint32_t>(i));
 		}
