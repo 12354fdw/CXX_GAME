@@ -38,4 +38,5 @@ target_link_libraries(renderer PUBLIC
 	SDL3::SDL3
 	sdl3webgpu
 	glm::glm-header-only
+	$<$<BOOL:$<TARGET_EXISTS:sanitizerflags>>:sanitizerflags>
 )

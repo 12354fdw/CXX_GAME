@@ -9,7 +9,7 @@ int main() {
 
 	while (client.running) {
 		auto currentTime = std::chrono::steady_clock::now();
-		std::chrono::duration<double> dt = currentTime - lastTime;
+		std::chrono::duration<float> dt = currentTime - lastTime;
 
 		client.tick(dt.count());
 		lastTime = currentTime;

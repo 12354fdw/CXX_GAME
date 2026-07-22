@@ -12,21 +12,21 @@ add_compile_options(
     -Wno-c2y-extensions
 )
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    if(NOT MSVC)
-        add_compile_options(
-            -fsanitize=address
-            -fsanitize=undefined
-            -fno-omit-frame-pointer
-            -g
-            -O0
-        )
-
-        add_link_options(
-            -fsanitize=address
-            -fsanitize=undefined
-        )
-    endif()
+if(CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT MSVC)
+    add_library(sanitizerflags INTERFACE)
+    
+    target_compile_options(sanitizerflags INTERFACE
+        -fsanitize=address
+        -fsanitize=undefined
+        -fno-omit-frame-pointer
+        -g
+        -O0
+    )
+    
+    target_link_options(sanitizerflags INTERFACE
+        -fsanitize=address
+        -fsanitize=undefined
+    )
 endif()
 
 add_subdirectory(src-renderer)

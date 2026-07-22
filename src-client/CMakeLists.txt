@@ -18,6 +18,11 @@ target_include_directories(cxxgame PRIVATE
     include/client
 )
 
+target_include_directories(cxxgame PUBLIC
+	include/
+)
+
 target_link_libraries(cxxgame PRIVATE
 	renderer
+	$<$<BOOL:$<TARGET_EXISTS:sanitizerflags>>:sanitizerflags>
 )
