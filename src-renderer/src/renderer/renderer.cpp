@@ -81,10 +81,10 @@ void Renderer::renderFrame() {
 		Model &model = instance.getModel();
 
 		for (auto &mesh : model.getMeshes()) {
-			const Buffer<Vertex> &vertexBuffer = mesh.getVertexBuffer();
-			const Buffer<uint32_t> &indexBuffer = mesh.getIndexBuffer();
+			const GPUBuffer<Vertex> &vertexBuffer = mesh.getVertexBuffer();
+			const GPUBuffer<uint32_t> &indexBuffer = mesh.getIndexBuffer();
 			
-			const Buffer<InstanceVertex> &instanceData =
+			const GPUBuffer<InstanceVertex> &instanceData =
 				instance.getInstanceVertexBuffer();
 
 				// ImmediateData
