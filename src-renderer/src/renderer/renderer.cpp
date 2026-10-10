@@ -83,16 +83,16 @@ void Renderer::renderFrame() {
 		for (auto &mesh : model.getMeshes()) {
 			const GPUBuffer<Vertex> &vertexBuffer = mesh.getVertexBuffer();
 			const GPUBuffer<uint32_t> &indexBuffer = mesh.getIndexBuffer();
-			
-			const GPUBuffer<InstanceVertex> &instanceData =
-				instance.getInstanceVertexBuffer();
 
-				// ImmediateData
-				glm::mat4 mvp = camera.getMVPMatrix(instance, aspectRatio);
+			// ImmediateData
+			glm::mat4 mvp = camera.getMVPMatrix(instance, aspectRatio);
 
 			ImmediateData immediate = {
 				.mvp = mvp,
 			};
+
+			const GPUBuffer<InstanceVertex> &instanceData =
+				instance.getInstanceVertexBuffer();
 
 			renderPassEncoder.SetImmediates(0, &immediate, sizeof(ImmediateData));
 
