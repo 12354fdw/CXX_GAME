@@ -12,7 +12,8 @@ namespace bingusengine {
 namespace renderer {
 class Instance {
   public:
-	Instance(const Device &device, Model &model) : model(model), device(device) {
+	Instance(const Device &device, Model &model)
+		: model(model), device(device) {
 		std::vector<InstanceVertex> tmp = {{.tint = color}};
 		instanceData.write(tmp);
 	};
@@ -23,19 +24,21 @@ class Instance {
 
 	void setColor(glm::vec4 color) {
 		this->color = color;
-		std::vector<InstanceVertex> tmp = {{ .tint = color}};
+		std::vector<InstanceVertex> tmp = {{.tint = color}};
 		instanceData.write(tmp);
 	};
 
 	Model &getModel() { return model; };
 	glm::vec4 getColor() { return color; };
-	const Buffer<InstanceVertex> &getInstanceVertexBuffer() { return instanceData; };
+	const GPUBuffer<InstanceVertex> &getInstanceVertexBuffer() {
+		return instanceData;
+	};
 
   private:
 	Model &model;
 	const Device &device;
 
-	Buffer<InstanceVertex> instanceData = Buffer<InstanceVertex>(
+	GPUBuffer<InstanceVertex> instanceData = GPUBuffer<InstanceVertex>(
 		device, wgpu::BufferUsage::Vertex | wgpu::BufferUsage::CopyDst, 1,
 		"instance data");
 

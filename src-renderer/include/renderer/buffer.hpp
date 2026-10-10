@@ -7,10 +7,10 @@
 
 namespace bingusengine {
 namespace renderer {
-template <class T> class Buffer {
+template <class T> class GPUBuffer {
   public:
-	Buffer(const Device &device, wgpu::BufferUsage usageFlags, size_t elementSize,
-		   std::string label = "unnamed buffer")
+	GPUBuffer(const Device &device, wgpu::BufferUsage usageFlags,
+			  size_t elementSize, std::string label = "unnamed buffer")
 		: device(device) {
 		capacity = elementSize * sizeof(T);
 
@@ -23,7 +23,7 @@ template <class T> class Buffer {
 		rawBuffer = device.getDevice().CreateBuffer(&desc);
 	}
 
-	~Buffer() {}
+	~GPUBuffer() {}
 
 	void write(const std::vector<T> &data, uint32_t byteOffset = 0) {
 		uint32_t byteSize = data.size() * sizeof(T);

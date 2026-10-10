@@ -13,13 +13,13 @@ class Mesh {
 	Mesh(const Device &device, std::vector<Vertex> &vertices,
 		 std::vector<uint32_t> &indices);
 
-	const Buffer<Vertex> &getVertexBuffer() const { return vertexBuffer; };
-	const Buffer<uint32_t> &getIndexBuffer() const { return indexBuffer; };
+	const GPUBuffer<Vertex> &getVertexBuffer() const { return vertexBuffer; };
+	const GPUBuffer<uint32_t> &getIndexBuffer() const { return indexBuffer; };
 	uint32_t getIndexCount() const { return indexCount; };
 
   private:
-	Buffer<Vertex> vertexBuffer;
-	Buffer<uint32_t> indexBuffer;
+	GPUBuffer<Vertex> vertexBuffer;
+	GPUBuffer<uint32_t> indexBuffer;
 
 	uint32_t indexCount;
 };
